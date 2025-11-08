@@ -1,0 +1,4069 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Global Embroidery Studio</title>
+  <script src="/_sdk/data_sdk.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #2d3748;
+      min-height: 100%;
+    }
+
+    html {
+      height: 100%;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    header {
+      text-align: center;
+      padding: 3rem 1rem;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      margin-bottom: 2rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin: 0 0 0.5rem 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .tagline {
+      font-size: 1.25rem;
+      color: #718096;
+      margin-bottom: 2rem;
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+
+    .tab-btn {
+      padding: 0.75rem 2rem;
+      border: none;
+      background: rgba(255, 255, 255, 0.9);
+      color: #667eea;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .tab-btn:hover {
+      background: #667eea;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .tab-btn.active {
+      background: #667eea;
+      color: white;
+    }
+
+    .tab-content {
+      display: none;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .design-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .design-card {
+      background: white;
+      border-radius: 15px;
+      padding: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .design-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+      border-color: #667eea;
+    }
+
+    .design-icon {
+      font-size: 4rem;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .design-name {
+      font-weight: 600;
+      font-size: 1.1rem;
+      text-align: center;
+      color: #2d3748;
+      margin-bottom: 0.5rem;
+    }
+
+    .design-category {
+      text-align: center;
+      color: #718096;
+      font-size: 0.9rem;
+    }
+
+    .customizer {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      .customizer {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .preview-area {
+      background: #f7fafc;
+      border-radius: 15px;
+      padding: 2rem;
+      min-height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      border: 2px dashed #cbd5e0;
+    }
+
+    .preview-content {
+      text-align: center;
+      position: relative;
+    }
+
+    .fabric-preview {
+      width: 100%;
+      max-width: 300px;
+      height: 300px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5rem;
+      position: relative;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .fabric-upload-area {
+      border: 2px dashed #cbd5e0;
+      border-radius: 10px;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 1rem;
+    }
+
+    .fabric-upload-area:hover {
+      border-color: #667eea;
+      background: rgba(102, 126, 234, 0.05);
+    }
+
+    .fabric-upload-area.dragover {
+      border-color: #667eea;
+      background: rgba(102, 126, 234, 0.1);
+    }
+
+    .upload-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.6;
+    }
+
+    .upload-text {
+      color: #718096;
+      font-size: 0.9rem;
+    }
+
+    #fabric-file {
+      display: none;
+    }
+
+    .design-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 4rem;
+      opacity: 0.9;
+      filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
+    }
+
+    .controls-area {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    label {
+      font-weight: 600;
+      color: #2d3748;
+      font-size: 0.95rem;
+    }
+
+    input, select, textarea {
+      padding: 0.75rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .color-picker-group {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    input[type="color"] {
+      width: 60px;
+      height: 60px;
+      border-radius: 10px;
+      cursor: pointer;
+      border: 2px solid #e2e8f0;
+    }
+
+    .btn {
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-primary {
+      background: #667eea;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-primary:disabled {
+      background: #cbd5e0;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-secondary {
+      background: #e2e8f0;
+      color: #2d3748;
+    }
+
+    .btn-secondary:hover {
+      background: #cbd5e0;
+    }
+
+    .order-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .order-card {
+      background: white;
+      border-radius: 15px;
+      padding: 1.5rem;
+      border-left: 4px solid #667eea;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .order-id {
+      font-weight: 700;
+      color: #667eea;
+      font-size: 1.1rem;
+    }
+
+    .status-badge {
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .status-pending {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status-processing {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .status-completed {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .order-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      color: #4a5568;
+      font-size: 0.95rem;
+    }
+
+    .message-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 1.5rem;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .message-card {
+      background: white;
+      border-radius: 15px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .message-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+      font-size: 0.9rem;
+      color: #718096;
+    }
+
+    .message-sender {
+      font-weight: 600;
+      color: #667eea;
+    }
+
+    .message-body {
+      color: #2d3748;
+      line-height: 1.6;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: #718096;
+    }
+
+    .empty-state-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: #48bb78;
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      display: none;
+      z-index: 1000;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .toast.show {
+      display: block;
+    }
+
+    .loading {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .login-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100%;
+      padding: 2rem;
+    }
+
+    .login-card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      padding: 3rem;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    .login-title {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .login-subtitle {
+      color: #718096;
+      margin-bottom: 2rem;
+      font-size: 1.1rem;
+    }
+
+    .login-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .form-group {
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #2d3748;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 1rem;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 1rem;
+    }
+
+    .login-btn:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .login-btn:disabled {
+      background: #cbd5e0;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .demo-credentials {
+      background: #f7fafc;
+      border-radius: 10px;
+      padding: 1rem;
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      color: #4a5568;
+    }
+
+    .demo-credentials strong {
+      color: #2d3748;
+    }
+
+    .main-app {
+      display: none;
+    }
+
+    .main-app.show {
+      display: block;
+    }
+
+    .ai-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-left: 0.5rem;
+    }
+
+    h2 {
+      font-size: 1.75rem;
+      margin-bottom: 1rem;
+      color: #2d3748;
+    }
+
+    h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+      color: #2d3748;
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body><!-- Login Page -->
+  <div class="login-container" id="login-page">
+   <div class="login-card">
+    <h1 class="login-title">🧵</h1>
+    <h2 class="login-title" id="login-platform-title">EmbroiTech</h2>
+    <p class="login-subtitle">Sign in to modernize your embroidery design experience</p>
+    <form class="login-form" id="login-form">
+     <div class="form-group"><label for="login-email">Email Address</label> <input type="email" id="login-email" placeholder="Enter your email" required>
+     </div>
+     <div class="form-group"><label for="login-password">Password</label> <input type="password" id="login-password" placeholder="Enter your password" required>
+     </div><button type="submit" class="login-btn" id="login-btn">Sign In</button>
+    </form>
+    <div class="demo-credentials"><strong>Demo Credentials:</strong><br>
+      Email: demo@embroidery.com<br>
+      Password: demo123
+    </div>
+   </div>
+  </div><!-- Main Application -->
+  <div class="main-app" id="main-app">
+   <div class="container">
+    <header>
+     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+      <div style="flex: 1;"></div>
+      <div style="text-align: center; flex: 2;">
+       <h1 id="platform-title">Global Embroidery Studio</h1>
+       <p class="tagline" id="tagline">Discover &amp; Customize Embroidery Designs</p>
+      </div>
+      <div style="flex: 1; text-align: right;"><button class="btn btn-secondary" id="logout-btn" style="padding: 0.5rem 1rem; font-size: 0.9rem;"> 🚪 Logout </button>
+      </div>
+     </div>
+     <div class="nav-tabs"><button class="tab-btn active" data-tab="home">🏠 Home</button> <button class="tab-btn" data-tab="discover">🌍 Discover Designs</button> <button class="tab-btn" data-tab="customize">✨ Customize</button> <button class="tab-btn" data-tab="draw">🎨 Draw Design</button> <button class="tab-btn" data-tab="cart">🛒 Cart (<span id="cart-count">0</span>)</button> <button class="tab-btn" data-tab="orders">📦 My Orders</button> <button class="tab-btn" data-tab="contact">💬 Contact Team</button> <button class="tab-btn" data-tab="chat">💬 Live Chat</button>
+     </div>
+    </header>
+    <div id="home" class="tab-content active">
+     <div style="text-align: center; padding: 2rem 0;">
+      <h2>Welcome to EmbroiTech Platform</h2>
+      <p style="color: #718096; font-size: 1.2rem; margin-bottom: 3rem;">Modernizing embroidery design visualization, customization, and ordering for traditional Indian garments</p>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
+       <div style="background: white; border-radius: 15px; padding: 2rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">
+         🧵
+        </div>
+        <h3>Traditional Design Library</h3>
+        <p style="color: #718096; margin-bottom: 1.5rem;">Browse authentic embroidery patterns for kurti, anarkali, saree, lehenga and more traditional garments</p><button class="btn btn-primary" onclick="switchTab('discover')">Explore Designs</button>
+       </div>
+       <div style="background: white; border-radius: 15px; padding: 2rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">
+         📱
+        </div>
+        <h3>AI-Powered Visualization</h3>
+        <p style="color: #718096; margin-bottom: 1.5rem;">Upload your fabric photos and see realistic previews of how embroidery will look before ordering</p><button class="btn btn-primary" onclick="switchTab('customize')">Start Visualizing</button>
+       </div>
+       <div style="background: white; border-radius: 15px; padding: 2rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">
+         🎨
+        </div>
+        <h3>Custom Design Studio</h3>
+        <p style="color: #718096; margin-bottom: 1.5rem;">Create your own embroidery patterns with professional drawing tools and save them for future use</p><button class="btn btn-primary" onclick="switchTab('draw')">Start Creating</button>
+       </div>
+      </div>
+      <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 20px; padding: 3rem; margin: 2rem 0;">
+       <h3 style="color: white; margin-bottom: 1rem;">Why Choose EmbroiTech?</h3>
+       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; text-align: left;">
+        <div>
+         <h4 style="color: white;">🧵 Traditional Expertise</h4>
+         <p>Authentic patterns for kurti, anarkali, saree, lehenga with traditional techniques like chikankari, zardozi, mirror work</p>
+        </div>
+        <div>
+         <h4 style="color: white;">📱 Digital Innovation</h4>
+         <p>AI-powered fabric visualization lets you see exactly how embroidery will look before ordering</p>
+        </div>
+        <div>
+         <h4 style="color: white;">🎨 Complete Customization</h4>
+         <p>Adjust colors, placement, size and create custom designs with professional drawing tools</p>
+        </div>
+        <div>
+         <h4 style="color: white;">💬 Expert Support</h4>
+         <p>Chat with embroidery specialists who understand traditional techniques and modern requirements</p>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div id="discover" class="tab-content">
+     <h2>Browse Traditional Embroidery Designs</h2>
+     <p style="color: #718096; margin-bottom: 1rem;">Discover authentic patterns for kurti, anarkali, saree, lehenga and more. Select a design to start customizing.</p>
+     <div style="display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap;"><button class="btn btn-secondary filter-btn active" data-filter="all">All Designs</button> <button class="btn btn-secondary filter-btn" data-filter="Traditional">Traditional</button> <button class="btn btn-secondary filter-btn" data-filter="Floral">Floral</button> <button class="btn btn-secondary filter-btn" data-filter="Mirror Work">Mirror Work</button> <button class="btn btn-secondary filter-btn" data-filter="Chikankari">Chikankari</button> <button class="btn btn-secondary filter-btn" data-filter="Zardozi">Zardozi</button>
+     </div>
+     <div class="design-grid" id="design-grid"></div>
+    </div>
+    <div id="customize" class="tab-content">
+     <h2>Customize Your Design <span class="ai-badge">AI Preview</span></h2>
+     <div class="customizer">
+      <div class="preview-area">
+       <div class="preview-content">
+        <div class="fabric-preview" id="fabric-preview">
+         <div class="design-overlay" id="design-overlay">
+          🌸
+         </div>
+        </div>
+        <p style="margin-top: 1rem; color: #718096; font-size: 0.9rem;">AI-assisted preview on your fabric</p>
+       </div>
+      </div>
+      <div class="controls-area">
+       <div class="control-group"><label for="design-select">Select Design</label> <select id="design-select"></select>
+       </div>
+       <div class="control-group"><label>Upload Your Fabric Image</label>
+        <div class="fabric-upload-area" id="fabric-upload-area">
+         <div class="upload-icon">
+          📸
+         </div>
+         <div class="upload-text"><strong>Click to upload</strong> or drag &amp; drop your fabric image<br><small>JPG, PNG up to 5MB</small>
+         </div>
+        </div><input type="file" id="fabric-file" accept="image/*"> <button class="btn btn-secondary" id="reset-fabric-btn" style="width: 100%; margin-top: 0.5rem; display: none;"> 🔄 Use Default Fabric </button>
+       </div>
+       <div class="control-group"><label>Fabric Color (if no image)</label>
+        <div class="color-picker-group"><input type="color" id="fabric-color" value="#ffffff"> <span id="fabric-color-label">#ffffff</span>
+        </div>
+       </div>
+       <div class="control-group"><label>Thread Color</label>
+        <div class="color-picker-group"><input type="color" id="thread-color" value="#ff6b9d"> <span id="thread-color-label">#ff6b9d</span>
+        </div>
+       </div>
+       <div class="control-group"><label for="size-select">Size</label> <select id="size-select"> <option value="small">Small (5cm x 5cm)</option> <option value="medium" selected>Medium (10cm x 10cm)</option> <option value="large">Large (15cm x 15cm)</option> <option value="xlarge">Extra Large (20cm x 20cm)</option> </select>
+       </div>
+       <div class="control-group"><label>Position on Fabric</label>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+         <div><label for="position-x" style="font-size: 0.8rem; color: #718096;">Horizontal</label> <input type="range" id="position-x" min="0" max="100" value="50" style="width: 100%;">
+         </div>
+         <div><label for="position-y" style="font-size: 0.8rem; color: #718096;">Vertical</label> <input type="range" id="position-y" min="0" max="100" value="50" style="width: 100%;">
+         </div>
+        </div>
+       </div>
+       <div class="control-group"><label for="quantity">Quantity</label> <input type="number" id="quantity" min="1" value="1">
+       </div>
+       <div class="control-group"><label for="customer-name">Your Name</label> <input type="text" id="customer-name" placeholder="Enter your name">
+       </div>
+       <div class="control-group"><label for="customer-email">Email</label> <input type="email" id="customer-email" placeholder="your@email.com">
+       </div>
+       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;"><button class="btn btn-secondary" id="add-to-cart-btn"> 🛒 Add to Cart </button> <button class="btn btn-primary" id="place-order-btn"> <span id="order-button-text">Place Order</span> </button>
+       </div>
+       <div id="cart-summary" style="margin-top: 1rem; padding: 1rem; background: #f7fafc; border-radius: 10px; display: none;">
+        <h4 style="margin: 0 0 0.5rem 0; color: #2d3748;">Cart Summary</h4>
+        <div id="cart-items"></div>
+        <div style="border-top: 1px solid #e2e8f0; margin-top: 0.5rem; padding-top: 0.5rem;"><strong>Total Items: <span id="cart-total">0</span></strong>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div id="draw" class="tab-content">
+     <h2>Draw Your Own Design <span class="ai-badge">Creative Studio</span></h2>
+     <p style="color: #718096; margin-bottom: 2rem;">Create custom embroidery patterns with our drawing tools</p>
+     <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+      <div style="background: white; border-radius: 15px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);">
+       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h3 style="margin: 0;">Drawing Canvas</h3>
+        <div style="display: flex; gap: 0.5rem;"><button class="btn btn-secondary" id="clear-canvas" style="padding: 0.5rem 1rem; font-size: 0.9rem;">🗑️ Clear</button> <button class="btn btn-primary" id="save-design" style="padding: 0.5rem 1rem; font-size: 0.9rem;">💾 Save Design</button>
+        </div>
+       </div>
+       <canvas id="drawing-canvas" width="500" height="400" style="border: 2px solid #e2e8f0; border-radius: 10px; cursor: crosshair; width: 100%; max-width: 500px; height: auto;"></canvas>
+      </div>
+      <div style="background: white; border-radius: 15px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);">
+       <h3>Drawing Tools</h3>
+       <div class="control-group"><label>Brush Color</label>
+        <div class="color-picker-group"><input type="color" id="brush-color" value="#667eea"> <span id="brush-color-label">#667eea</span>
+        </div>
+       </div>
+       <div class="control-group"><label for="brush-size">Brush Size: <span id="brush-size-value">5</span>px</label> <input type="range" id="brush-size" min="1" max="20" value="5" style="width: 100%;">
+       </div>
+       <div class="control-group"><label>Drawing Mode</label> <select id="drawing-mode"> <option value="brush">🖌️ Brush</option> <option value="line">📏 Straight Line</option> <option value="circle">⭕ Circle</option> <option value="rectangle">⬜ Rectangle</option> </select>
+       </div>
+       <div class="control-group"><label for="design-name-input">Design Name</label> <input type="text" id="design-name-input" placeholder="My Custom Design" value="My Custom Design">
+       </div>
+       <div style="margin-top: 2rem; padding: 1rem; background: #f7fafc; border-radius: 10px;">
+        <h4 style="margin: 0 0 0.5rem 0; font-size: 0.9rem;">💡 Tips:</h4>
+        <ul style="font-size: 0.8rem; color: #718096; margin: 0; padding-left: 1.2rem;">
+         <li>Use simple, bold strokes for best embroidery results</li>
+         <li>Avoid very thin lines (less than 3px)</li>
+         <li>Keep designs under 15cm for optimal quality</li>
+         <li>Save your design to use in customization</li>
+        </ul>
+       </div>
+      </div>
+     </div>
+     <div id="saved-designs" style="margin-top: 2rem;">
+      <h3>Your Saved Designs</h3>
+      <div id="custom-designs-grid" class="design-grid"></div>
+     </div>
+    </div>
+    <div id="cart" class="tab-content">
+     <h2>Shopping Cart</h2>
+     <p style="color: #718096; margin-bottom: 1.5rem;">Review your customized designs before ordering</p>
+     <div id="cart-list" class="order-list"></div>
+     <div id="cart-checkout" style="margin-top: 2rem; padding: 1.5rem; background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); display: none;">
+      <h3>Checkout Information</h3>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+       <div class="control-group"><label for="checkout-name">Your Name</label> <input type="text" id="checkout-name" placeholder="Enter your name">
+       </div>
+       <div class="control-group"><label for="checkout-email">Email</label> <input type="email" id="checkout-email" placeholder="your@email.com">
+       </div>
+      </div><button class="btn btn-primary" id="checkout-btn" style="width: 100%;"> Complete Order </button>
+     </div>
+    </div>
+    <div id="orders" class="tab-content">
+     <h2>Track Your Orders</h2>
+     <p style="color: #718096; margin-bottom: 1rem;">Monitor the status of your embroidery orders</p>
+     <div class="order-list" id="order-list"></div>
+    </div>
+    <div id="contact" class="tab-content">
+     <h2 id="contact-heading">Questions? Let's Talk</h2>
+     <p style="color: #718096; margin-bottom: 1.5rem;">Send a message to our embroidery team</p>
+     <div class="control-group"><label for="message-name">Your Name</label> <input type="text" id="message-name" placeholder="Enter your name">
+     </div>
+     <div class="control-group" style="margin-top: 1rem;"><label for="message-email">Email</label> <input type="email" id="message-email" placeholder="your@email.com">
+     </div>
+     <div class="control-group" style="margin-top: 1rem;"><label for="message-text">Message</label> <textarea id="message-text" rows="5" placeholder="How can we help you?"></textarea>
+     </div><button class="btn btn-primary" id="send-message-btn" style="margin-top: 1rem;">Send Message</button>
+     <h3 style="margin-top: 2rem;">Your Messages</h3>
+     <div class="message-list" id="message-list"></div>
+    </div>
+    <div id="chat" class="tab-content">
+     <h2>Live Chat Support</h2>
+     <p style="color: #718096; margin-bottom: 1.5rem;">Chat with our embroidery experts in real-time</p>
+     <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem; max-width: 800px;">
+      <div style="background: white; border-radius: 15px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); height: 400px; display: flex; flex-direction: column;">
+       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #e2e8f0;">
+        <h3 style="margin: 0;">Chat with Support Team</h3>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+         <div style="width: 8px; height: 8px; background: #48bb78; border-radius: 50%;"></div><span style="font-size: 0.9rem; color: #48bb78; font-weight: 600;">Online</span>
+        </div>
+       </div>
+       <div id="chat-messages" style="flex: 1; overflow-y: auto; padding: 1rem; background: #f7fafc; border-radius: 10px; margin-bottom: 1rem;">
+        <div style="background: #e2e8f0; padding: 0.75rem; border-radius: 10px; margin-bottom: 1rem; max-width: 80%;">
+         <div style="font-size: 0.8rem; color: #718096; margin-bottom: 0.25rem;">
+          Support Team • Just now
+         </div>
+         <div>
+          Hello! 👋 Welcome to EmbroiTech support. How can I help you with your embroidery needs today?
+         </div>
+        </div>
+       </div>
+       <div style="display: flex; gap: 0.5rem;"><input type="text" id="chat-input" placeholder="Type your message..." style="flex: 1; padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 10px;"> <button class="btn btn-primary" id="send-chat-btn" style="padding: 0.75rem 1.5rem;">Send</button>
+       </div>
+      </div>
+      <div style="background: white; border-radius: 15px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);">
+       <h3>Quick Help Topics</h3>
+       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;"><button class="btn btn-secondary quick-help-btn" data-message="How do I upload my fabric image?">📸 Upload Fabric</button> <button class="btn btn-secondary quick-help-btn" data-message="What file formats do you accept for custom designs?">📁 File Formats</button> <button class="btn btn-secondary quick-help-btn" data-message="How long does embroidery take?">⏰ Processing Time</button> <button class="btn btn-secondary quick-help-btn" data-message="What are your shipping options?">🚚 Shipping Info</button> <button class="btn btn-secondary quick-help-btn" data-message="Can I modify my order after placing it?">✏️ Order Changes</button> <button class="btn btn-secondary quick-help-btn" data-message="What's the maximum design size?">📏 Size Limits</button>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div><!-- Payment Modal -->
+   <div id="payment-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000; align-items: center; justify-content: center;">
+    <div style="background: white; border-radius: 20px; padding: 2rem; max-width: 500px; width: 90%; max-height: 90%; overflow-y: auto;">
+     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+      <h2 style="margin: 0;">Secure Payment</h2><button id="close-payment-modal" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">✕</button>
+     </div>
+     <div id="payment-content">
+      <div style="background: #f7fafc; border-radius: 10px; padding: 1.5rem; margin-bottom: 2rem;">
+       <h3 style="margin: 0 0 1rem 0;">Order Summary</h3>
+       <div id="payment-order-summary"></div>
+       <div style="border-top: 1px solid #e2e8f0; margin-top: 1rem; padding-top: 1rem;">
+        <div style="display: flex; justify-content: space-between; font-weight: 600; font-size: 1.1rem;"><span>Total:</span> <span id="payment-total">$0.00</span>
+        </div>
+       </div>
+      </div>
+      <form id="payment-form">
+       <div class="control-group"><label for="card-number">Card Number</label> <input type="text" id="card-number" placeholder="1234 5678 9012 3456" maxlength="19">
+       </div>
+       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="control-group"><label for="expiry-date">Expiry Date</label> <input type="text" id="expiry-date" placeholder="MM/YY" maxlength="5">
+        </div>
+        <div class="control-group"><label for="cvv">CVV</label> <input type="text" id="cvv" placeholder="123" maxlength="3">
+        </div>
+       </div>
+       <div class="control-group"><label for="cardholder-name">Cardholder Name</label> <input type="text" id="cardholder-name" placeholder="John Doe">
+       </div>
+       <div class="control-group"><label for="billing-address">Billing Address</label> <textarea id="billing-address" rows="3" placeholder="123 Main St, City, State, ZIP"></textarea>
+       </div><button type="submit" class="btn btn-primary" id="process-payment-btn" style="width: 100%; margin-top: 1rem;"> 🔒 Process Secure Payment </button>
+      </form>
+      <div style="text-align: center; margin-top: 1rem; font-size: 0.9rem; color: #718096;">
+       <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.5rem;"><span>🔒</span> <span>Secured by 256-bit SSL encryption</span>
+       </div>
+       <div>
+        💳 We accept Visa, MasterCard, American Express
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="toast" id="toast"></div>
+   <script>
+    const designs = [
+      { id: 'd1', name: 'Paisley Border', icon: '🌿', category: 'Traditional', garment: 'Kurti' },
+      { id: 'd2', name: 'Mirror Work Mandala', icon: '✨', category: 'Mirror Work', garment: 'Anarkali' },
+      { id: 'd3', name: 'Floral Vine', icon: '🌸', category: 'Floral', garment: 'Saree' },
+      { id: 'd4', name: 'Geometric Pattern', icon: '🔷', category: 'Geometric', garment: 'Lehenga' },
+      { id: 'd5', name: 'Peacock Motif', icon: '🦚', category: 'Traditional', garment: 'Saree' },
+      { id: 'd6', name: 'Rose Bouquet', icon: '🌹', category: 'Floral', garment: 'Kurti' },
+      { id: 'd7', name: 'Lotus Chain', icon: '🪷', category: 'Traditional', garment: 'Anarkali' },
+      { id: 'd8', name: 'Zardozi Border', icon: '👑', category: 'Zardozi', garment: 'Lehenga' },
+      { id: 'd9', name: 'Butterfly Garden', icon: '🦋', category: 'Floral', garment: 'Kurti' },
+      { id: 'd10', name: 'Rajasthani Mirror', icon: '🪞', category: 'Mirror Work', garment: 'Lehenga' },
+      { id: 'd11', name: 'Mogul Arch', icon: '🕌', category: 'Traditional', garment: 'Anarkali' },
+      { id: 'd12', name: 'Marigold Border', icon: '🌼', category: 'Floral', garment: 'Saree' },
+      { id: 'd13', name: 'Chikankari Vine', icon: '🌱', category: 'Chikankari', garment: 'Kurti' },
+      { id: 'd14', name: 'Phulkari Bloom', icon: '🌺', category: 'Phulkari', garment: 'Dupatta' },
+      { id: 'd15', name: 'Kantha Stitch', icon: '🧵', category: 'Kantha', garment: 'Saree' },
+      { id: 'd16', name: 'Gota Work Border', icon: '✨', category: 'Gota Work', garment: 'Lehenga' }
+    ];
+
+    const defaultConfig = {
+      platform_title: 'EmbroiTech',
+      tagline: 'Modernizing Embroidery Design & Visualization',
+      cta_button: 'Explore Designs',
+      order_button: 'Place Order',
+      contact_heading: "Connect with Embroidery Experts",
+      background_color: '#667eea',
+      surface_color: '#ffffff',
+      text_color: '#2d3748',
+      primary_action_color: '#667eea',
+      secondary_action_color: '#e2e8f0',
+      font_family: 'Inter',
+      font_size: 16
+    };
+
+    let currentRecordCount = 0;
+    let allRecords = [];
+    let isLoggedIn = false;
+    let cart = [];
+    let uploadedFabricImage = null;
+    let customDesigns = [];
+    let chatMessages = [];
+    
+    // Drawing canvas variables
+    let canvas, ctx;
+    let isDrawing = false;
+    let startX, startY;
+    let currentTool = 'brush';
+
+    const dataHandler = {
+      onDataChanged(data) {
+        allRecords = data;
+        currentRecordCount = data.length;
+        renderOrders(data);
+        renderMessages(data);
+      }
+    };
+
+    async function initializeApp() {
+      // Check if user is already logged in
+      const savedLogin = localStorage.getItem('embroidery_login');
+      if (savedLogin) {
+        isLoggedIn = true;
+        showMainApp();
+      } else {
+        showLoginPage();
+      }
+
+      if (window.dataSdk) {
+        const initResult = await window.dataSdk.init(dataHandler);
+        if (!initResult.isOk) {
+          console.error('Failed to initialize data SDK');
+        }
+      }
+
+      if (window.elementSdk) {
+        await window.elementSdk.init({
+          defaultConfig,
+          onConfigChange: async (config) => {
+            const customFont = config.font_family || defaultConfig.font_family;
+            const baseSize = config.font_size || defaultConfig.font_size;
+            const baseFontStack = '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+
+            document.body.style.fontFamily = `${customFont}, ${baseFontStack}`;
+            document.body.style.fontSize = `${baseSize}px`;
+            document.body.style.background = `linear-gradient(135deg, ${config.background_color || defaultConfig.background_color} 0%, ${config.primary_action_color || defaultConfig.primary_action_color} 100%)`;
+            document.body.style.color = config.text_color || defaultConfig.text_color;
+
+            const header = document.querySelector('header');
+            header.style.background = `rgba(255, 255, 255, 0.95)`;
+
+            const h1 = document.querySelector('h1');
+            h1.style.fontSize = `${baseSize * 2}px`;
+            h1.style.background = `linear-gradient(135deg, ${config.background_color || defaultConfig.background_color} 0%, ${config.primary_action_color || defaultConfig.primary_action_color} 100%)`;
+            h1.style.webkitBackgroundClip = 'text';
+            h1.style.webkitTextFillColor = 'transparent';
+            h1.style.backgroundClip = 'text';
+
+            document.querySelectorAll('h2').forEach(el => {
+              el.style.fontSize = `${baseSize * 1.75}px`;
+              el.style.color = config.text_color || defaultConfig.text_color;
+            });
+
+            document.querySelectorAll('h3').forEach(el => {
+              el.style.fontSize = `${baseSize * 1.25}px`;
+              el.style.color = config.text_color || defaultConfig.text_color;
+            });
+
+            document.querySelector('.tagline').style.fontSize = `${baseSize * 1.25}px`;
+
+            document.querySelectorAll('.btn-primary').forEach(btn => {
+              btn.style.background = config.primary_action_color || defaultConfig.primary_action_color;
+            });
+
+            document.querySelectorAll('.btn-secondary').forEach(btn => {
+              btn.style.background = config.secondary_action_color || defaultConfig.secondary_action_color;
+            });
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+              btn.style.color = config.primary_action_color || defaultConfig.primary_action_color;
+            });
+
+            document.querySelectorAll('.tab-btn.active').forEach(btn => {
+              btn.style.background = config.primary_action_color || defaultConfig.primary_action_color;
+              btn.style.color = config.surface_color || defaultConfig.surface_color;
+            });
+
+            document.getElementById('platform-title').textContent = config.platform_title || defaultConfig.platform_title;
+            document.getElementById('tagline').textContent = config.tagline || defaultConfig.tagline;
+            document.getElementById('order-button-text').textContent = config.order_button || defaultConfig.order_button;
+            document.getElementById('contact-heading').textContent = config.contact_heading || defaultConfig.contact_heading;
+          },
+          mapToCapabilities: (config) => ({
+            recolorables: [
+              {
+                get: () => config.background_color || defaultConfig.background_color,
+                set: (value) => {
+                  if (window.elementSdk) {
+                    window.elementSdk.config.background_color = value;
+                    window.elementSdk.setConfig({ background_color: value });
+                  }
+                }
+              },
+              {
+                get: () => config.surface_color || defaultConfig.surface_color,
+                set: (value) => {
+                  if (window.elementSdk) {
+                    window.elementSdk.config.surface_color = value;
+                    window.elementSdk.setConfig({ surface_color: value });
+                  }
+                }
+              },
+              {
+                get: () => config.text_color || defaultConfig.text_color,
+                set: (value) => {
+                  if (window.elementSdk) {
+                    window.elementSdk.config.text_color = value;
+                    window.elementSdk.setConfig({ text_color: value });
+                  }
+                }
+              },
+              {
+                get: () => config.primary_action_color || defaultConfig.primary_action_color,
+                set: (value) => {
+                  if (window.elementSdk) {
+                    window.elementSdk.config.primary_action_color = value;
+                    window.elementSdk.setConfig({ primary_action_color: value });
+                  }
+                }
+              },
+              {
+                get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
+                set: (value) => {
+                  if (window.elementSdk) {
+                    window.elementSdk.config.secondary_action_color = value;
+                    window.elementSdk.setConfig({ secondary_action_color: value });
+                  }
+                }
+              }
+            ],
+            borderables: [],
+            fontEditable: {
+              get: () => config.font_family || defaultConfig.font_family,
+              set: (value) => {
+                if (window.elementSdk) {
+                  window.elementSdk.config.font_family = value;
+                  window.elementSdk.setConfig({ font_family: value });
+                }
+              }
+            },
+            fontSizeable: {
+              get: () => config.font_size || defaultConfig.font_size,
+              set: (value) => {
+                if (window.elementSdk) {
+                  window.elementSdk.config.font_size = value;
+                  window.elementSdk.setConfig({ font_size: value });
+                }
+              }
+            }
+          }),
+          mapToEditPanelValues: (config) => new Map([
+            ['platform_title', config.platform_title || defaultConfig.platform_title],
+            ['tagline', config.tagline || defaultConfig.tagline],
+            ['cta_button', config.cta_button || defaultConfig.cta_button],
+            ['order_button', config.order_button || defaultConfig.order_button],
+            ['contact_heading', config.contact_heading || defaultConfig.contact_heading]
+          ])
+        });
+      }
+
+      renderDesigns();
+      populateDesignSelect();
+      setupEventListeners();
+      setupLoginListeners();
+      initializeDrawingCanvas();
+      setupChatListeners();
+      setupPaymentModal();
+      loadSavedDesigns();
+    }
+
+    function showLoginPage() {
+      document.getElementById('login-page').style.display = 'flex';
+      document.getElementById('main-app').classList.remove('show');
+    }
+
+    function showMainApp() {
+      document.getElementById('login-page').style.display = 'none';
+      document.getElementById('main-app').classList.add('show');
+    }
+
+    function setupLoginListeners() {
+      document.getElementById('login-form').addEventListener('submit', handleLogin);
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value.trim();
+      const loginBtn = document.getElementById('login-btn');
+
+      if (!email || !password) {
+        showToast('Please enter both email and password', false);
+        return;
+      }
+
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'Signing In...';
+
+      // Simulate login validation (demo credentials)
+      setTimeout(() => {
+        if (email === 'demo@embroidery.com' && password === 'demo123') {
+          isLoggedIn = true;
+          localStorage.setItem('embroidery_login', 'true');
+          showToast('Welcome to Global Embroidery Studio! 🎉');
+          showMainApp();
+        } else {
+          showToast('Invalid credentials. Please use demo@embroidery.com / demo123', false);
+        }
+        
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Sign In';
+      }, 1000);
+    }
+
+    function handleLogout() {
+      localStorage.removeItem('embroidery_login');
+      isLoggedIn = false;
+      document.getElementById('login-email').value = '';
+      document.getElementById('login-password').value = '';
+      showToast('Logged out successfully');
+      showLoginPage();
+    }
+
+    function renderDesigns(filter = 'all') {
+      const grid = document.getElementById('design-grid');
+      const filteredDesigns = filter === 'all' ? designs : designs.filter(d => d.category === filter);
+      
+      grid.innerHTML = filteredDesigns.map(design => `
+        <div class="design-card" data-design-id="${design.id}">
+          <div class="design-icon">${design.icon}</div>
+          <div class="design-name">${design.name}</div>
+          <div class="design-category">${design.category}</div>
+          <div style="font-size: 0.8rem; color: #9ca3af; margin-top: 0.25rem;">For ${design.garment}</div>
+        </div>
+      `).join('');
+
+      document.querySelectorAll('.design-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const designId = card.dataset.designId;
+          const design = designs.find(d => d.id === designId);
+          document.getElementById('design-select').value = designId;
+          document.getElementById('design-overlay').textContent = design.icon;
+          switchTab('customize');
+        });
+      });
+      
+      // Setup filter buttons
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          renderDesigns(btn.dataset.filter);
+        });
+      });
+    }
+
+    function populateDesignSelect() {
+      const select = document.getElementById('design-select');
+      select.innerHTML = designs.map(design => 
+        `<option value="${design.id}">${design.icon} ${design.name}</option>`
+      ).join('');
+    }
+
+    function setupEventListeners() {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          switchTab(btn.dataset.tab);
+        });
+      });
+
+      document.getElementById('design-select').addEventListener('change', (e) => {
+        const design = designs.find(d => d.id === e.target.value);
+        document.getElementById('design-overlay').textContent = design.icon;
+      });
+
+      document.getElementById('fabric-color').addEventListener('input', (e) => {
+        document.getElementById('fabric-preview').style.background = e.target.value;
+        document.getElementById('fabric-color-label').textContent = e.target.value;
+      });
+
+      document.getElementById('thread-color').addEventListener('input', (e) => {
+        document.getElementById('design-overlay').style.color = e.target.value;
+        document.getElementById('thread-color-label').textContent = e.target.value;
+      });
+
+      document.getElementById('place-order-btn').addEventListener('click', placeOrder);
+      document.getElementById('send-message-btn').addEventListener('click', sendMessage);
+      document.getElementById('logout-btn').addEventListener('click', handleLogout);
+      document.getElementById('add-to-cart-btn').addEventListener('click', addToCart);
+      document.getElementById('checkout-btn').addEventListener('click', checkoutCart);
+
+      // Fabric upload handlers
+      document.getElementById('fabric-upload-area').addEventListener('click', () => {
+        document.getElementById('fabric-file').click();
+      });
+
+      document.getElementById('fabric-file').addEventListener('change', handleFabricUpload);
+      document.getElementById('reset-fabric-btn').addEventListener('click', resetFabric);
+
+      // Drag and drop for fabric upload
+      const uploadArea = document.getElementById('fabric-upload-area');
+      uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('dragover');
+      });
+
+      uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('dragover');
+      });
+
+      uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+          handleFabricFile(files[0]);
+        }
+      });
+
+      // Position controls
+      document.getElementById('position-x').addEventListener('input', updateDesignPosition);
+      document.getElementById('position-y').addEventListener('input', updateDesignPosition);
+    }
+
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.tab === tabName) {
+          btn.classList.add('active');
+        }
+      });
+
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      document.getElementById(tabName).classList.add('active');
+    }
+
+    function initializeDrawingCanvas() {
+      canvas = document.getElementById('drawing-canvas');
+      if (!canvas) return;
+      
+      ctx = canvas.getContext('2d');
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      
+      // Canvas event listeners
+      canvas.addEventListener('mousedown', startDrawing);
+      canvas.addEventListener('mousemove', draw);
+      canvas.addEventListener('mouseup', stopDrawing);
+      canvas.addEventListener('mouseout', stopDrawing);
+      
+      // Touch events for mobile
+      canvas.addEventListener('touchstart', handleTouch);
+      canvas.addEventListener('touchmove', handleTouch);
+      canvas.addEventListener('touchend', stopDrawing);
+      
+      // Tool controls
+      document.getElementById('brush-color').addEventListener('input', (e) => {
+        document.getElementById('brush-color-label').textContent = e.target.value;
+      });
+      
+      document.getElementById('brush-size').addEventListener('input', (e) => {
+        document.getElementById('brush-size-value').textContent = e.target.value;
+      });
+      
+      document.getElementById('drawing-mode').addEventListener('change', (e) => {
+        currentTool = e.target.value;
+      });
+      
+      document.getElementById('clear-canvas').addEventListener('click', clearCanvas);
+      document.getElementById('save-design').addEventListener('click', saveCustomDesign);
+    }
+
+    function startDrawing(e) {
+      isDrawing = true;
+      const rect = canvas.getBoundingClientRect();
+      startX = (e.clientX - rect.left) * (canvas.width / rect.width);
+      startY = (e.clientY - rect.top) * (canvas.height / rect.height);
+      
+      ctx.strokeStyle = document.getElementById('brush-color').value;
+      ctx.lineWidth = document.getElementById('brush-size').value;
+      
+      if (currentTool === 'brush') {
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+      }
+    }
+
+    function draw(e) {
+      if (!isDrawing) return;
+      
+      const rect = canvas.getBoundingClientRect();
+      const currentX = (e.clientX - rect.left) * (canvas.width / rect.width);
+      const currentY = (e.clientY - rect.top) * (canvas.height / rect.height);
+      
+      if (currentTool === 'brush') {
+        ctx.lineTo(currentX, currentY);
+        ctx.stroke();
+      }
+    }
+
+    function stopDrawing(e) {
+      if (!isDrawing) return;
+      isDrawing = false;
+      
+      if (currentTool !== 'brush') {
+        const rect = canvas.getBoundingClientRect();
+        const endX = (e.clientX - rect.left) * (canvas.width / rect.width);
+        const endY = (e.clientY - rect.top) * (canvas.height / rect.height);
+        
+        ctx.beginPath();
+        
+        switch (currentTool) {
+          case 'line':
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(endX, endY);
+            break;
+          case 'rectangle':
+            ctx.rect(startX, startY, endX - startX, endY - startY);
+            break;
+          case 'circle':
+            const radius = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
+            ctx.arc(startX, startY, radius, 0, 2 * Math.PI);
+            break;
+        }
+        
+        ctx.stroke();
+      }
+    }
+
+    function handleTouch(e) {
+      e.preventDefault();
+      const touch = e.touches[0];
+      const mouseEvent = new MouseEvent(e.type === 'touchstart' ? 'mousedown' : 
+                                       e.type === 'touchmove' ? 'mousemove' : 'mouseup', {
+        clientX: touch.clientX,
+        clientY: touch.clientY
+      });
+      canvas.dispatchEvent(mouseEvent);
+    }
+
+    function clearCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function saveCustomDesign() {
+      const designName = document.getElementById('design-name-input').value.trim();
+      if (!designName) {
+        showToast('Please enter a design name', false);
+        return;
+      }
+      
+      const dataURL = canvas.toDataURL();
+      const customDesign = {
+        id: 'custom-' + Date.now(),
+        name: designName,
+        dataURL: dataURL,
+        timestamp: new Date().toISOString()
+      };
+      
+      customDesigns.push(customDesign);
+      localStorage.setItem('customDesigns', JSON.stringify(customDesigns));
+      
+      renderCustomDesigns();
+      showToast(`Design "${designName}" saved! 🎨`);
+      
+      // Clear canvas and reset name
+      clearCanvas();
+      document.getElementById('design-name-input').value = 'My Custom Design';
+    }
+
+    function renderCustomDesigns() {
+      const grid = document.getElementById('custom-designs-grid');
+      if (!grid) return;
+      
+      if (customDesigns.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">🎨</div>
+            <p>No custom designs yet. Start drawing above!</p>
+          </div>
+        `;
+        return;
+      }
+      
+      grid.innerHTML = customDesigns.map(design => `
+        <div class="design-card" data-design-id="${design.id}">
+          <div style="width: 100%; height: 120px; background-image: url(${design.dataURL}); background-size: contain; background-repeat: no-repeat; background-position: center; border-radius: 10px; margin-bottom: 1rem;"></div>
+          <div class="design-name">${design.name}</div>
+          <div class="design-category">Custom Design</div>
+        </div>
+      `).join('');
+      
+      // Add click handlers for custom designs
+      document.querySelectorAll('#custom-designs-grid .design-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const designId = card.dataset.designId;
+          const design = customDesigns.find(d => d.id === designId);
+          if (design) {
+            // Add to design select
+            const select = document.getElementById('design-select');
+            const option = document.createElement('option');
+            option.value = designId;
+            option.textContent = `🎨 ${design.name}`;
+            select.appendChild(option);
+            select.value = designId;
+            
+            // Update preview
+            const overlay = document.getElementById('design-overlay');
+            overlay.innerHTML = `<img src="${design.dataURL}" style="width: 100%; height: 100%; object-fit: contain;">`;
+            
+            switchTab('customize');
+            showToast(`Using custom design: ${design.name}`);
+          }
+        });
+      });
+    }
+
+    function setupChatListeners() {
+      const chatInput = document.getElementById('chat-input');
+      const sendBtn = document.getElementById('send-chat-btn');
+      
+      if (chatInput && sendBtn) {
+        sendBtn.addEventListener('click', sendChatMessage);
+        chatInput.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') {
+            sendChatMessage();
+          }
+        });
+      }
+      
+      // Quick help buttons
+      document.querySelectorAll('.quick-help-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const message = btn.dataset.message;
+          document.getElementById('chat-input').value = message;
+          sendChatMessage();
+        });
+      });
+    }
+
+    function sendChatMessage() {
+      const input = document.getElementById('chat-input');
+      const message = input.value.trim();
+      
+      if (!message) return;
+      
+      // Add user message
+      addChatMessage(message, 'user');
+      input.value = '';
+      
+      // Simulate support response
+      setTimeout(() => {
+        const responses = {
+          'How do I upload my fabric image?': 'To upload your fabric image, go to the Customize tab and click on the "Upload Your Fabric Image" area. You can drag & drop or click to select JPG/PNG files up to 5MB. This AI-powered preview shows exactly how embroidery will look on your kurti, saree, or lehenga fabric! 📸',
+          'What file formats do you accept for custom designs?': 'For custom designs, we accept PNG, JPG, and SVG files. For traditional embroidery like chikankari, zardozi, or mirror work, use high-contrast images with bold lines. Avoid very detailed photos - simple traditional motifs work best! 🎨',
+          'How long does embroidery take?': 'Processing time varies by technique: Chikankari/Simple work (1-5 items): 3-5 days, Zardozi/Mirror work (6+ items): 5-7 days, Complex traditional designs: 7-10 days. Rush orders available for special occasions! ⏰',
+          'What are your shipping options?': 'We offer: Standard (5-7 days) - Free over ₹2000, Express (2-3 days) - ₹299, Same-day (select cities) - ₹599. Pan-India delivery with tracking. Special packaging for delicate embroidery! 🚚',
+          'Can I modify my order after placing it?': 'Orders can be modified within 2 hours of placement for design changes. After cutting begins, modifications are limited. Contact us immediately for urgent changes - our artisans are flexible when possible! ✏️',
+          'What\'s the maximum design size?': 'Maximum size varies by garment: Kurti sleeves: 15cm, Saree borders: 20cm width, Lehenga panels: 25cm. Traditional motifs work best in smaller sizes (5-10cm) for authentic look. Custom sizing available! 📏'
+        };
+        
+        const response = responses[message] || `Thanks for your message! Our team will help you with: "${message}". For immediate assistance, please call our support line or check our FAQ section. Is there anything specific about embroidery I can help clarify? 😊`;
+        
+        addChatMessage(response, 'support');
+      }, 1000 + Math.random() * 2000);
+    }
+
+    function addChatMessage(message, sender) {
+      const chatMessages = document.getElementById('chat-messages');
+      const messageDiv = document.createElement('div');
+      
+      const isUser = sender === 'user';
+      const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      
+      messageDiv.style.cssText = `
+        background: ${isUser ? '#667eea' : '#e2e8f0'};
+        color: ${isUser ? 'white' : '#2d3748'};
+        padding: 0.75rem;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        max-width: 80%;
+        margin-left: ${isUser ? 'auto' : '0'};
+        margin-right: ${isUser ? '0' : 'auto'};
+      `;
+      
+      messageDiv.innerHTML = `
+        <div style="font-size: 0.8rem; opacity: 0.8; margin-bottom: 0.25rem;">
+          ${isUser ? 'You' : 'Support Team'} • ${time}
+        </div>
+        <div>${message}</div>
+      `;
+      
+      chatMessages.appendChild(messageDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function setupPaymentModal() {
+      const modal = document.getElementById('payment-modal');
+      const closeBtn = document.getElementById('close-payment-modal');
+      const form = document.getElementById('payment-form');
+      
+      closeBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+      });
+      
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.style.display = 'none';
+        }
+      });
+      
+      form.addEventListener('submit', processPayment);
+      
+      // Format card number input
+      document.getElementById('card-number').addEventListener('input', (e) => {
+        let value = e.target.value.replace(/\s/g, '').replace(/[^0-9]/gi, '');
+        let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+        e.target.value = formattedValue;
+      });
+      
+      // Format expiry date
+      document.getElementById('expiry-date').addEventListener('input', (e) => {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length >= 2) {
+          value = value.substring(0, 2) + '/' + value.substring(2, 4);
+        }
+        e.target.value = value;
+      });
+      
+      // CVV numbers only
+      document.getElementById('cvv').addEventListener('input', (e) => {
+        e.target.value = e.target.value.replace(/[^0-9]/g, '');
+      });
+    }
+
+    function showPaymentModal(orderSummary, total) {
+      const modal = document.getElementById('payment-modal');
+      const summaryDiv = document.getElementById('payment-order-summary');
+      const totalSpan = document.getElementById('payment-total');
+      
+      summaryDiv.innerHTML = orderSummary;
+      totalSpan.textContent = total;
+      
+      modal.style.display = 'flex';
+    }
+
+    function processPayment(e) {
+      e.preventDefault();
+      
+      const cardNumber = document.getElementById('card-number').value.replace(/\s/g, '');
+      const expiryDate = document.getElementById('expiry-date').value;
+      const cvv = document.getElementById('cvv').value;
+      const cardholderName = document.getElementById('cardholder-name').value.trim();
+      const billingAddress = document.getElementById('billing-address').value.trim();
+      
+      if (!cardNumber || !expiryDate || !cvv || !cardholderName || !billingAddress) {
+        showToast('Please fill in all payment fields', false);
+        return;
+      }
+      
+      if (cardNumber.length !== 16) {
+        showToast('Please enter a valid 16-digit card number', false);
+        return;
+      }
+      
+      const btn = document.getElementById('process-payment-btn');
+      btn.disabled = true;
+      btn.textContent = 'Processing Payment...';
+      
+      // Simulate payment processing
+      setTimeout(() => {
+        document.getElementById('payment-modal').style.display = 'none';
+        showToast('Payment processed successfully! 💳✨');
+        
+        // Reset form
+        document.getElementById('payment-form').reset();
+        btn.disabled = false;
+        btn.textContent = '🔒 Process Secure Payment';
+        
+        // Complete the checkout
+        completeCheckoutAfterPayment();
+      }, 2000 + Math.random() * 1000);
+    }
+
+    async function completeCheckoutAfterPayment() {
+      // This function completes the order after successful payment
+      const customerName = document.getElementById('checkout-name').value.trim();
+      const customerEmail = document.getElementById('checkout-email').value.trim();
+      
+      if (cart.length === 0) return;
+      
+      const orderId = 'ORD-' + Date.now();
+      
+      // Create order records for each cart item
+      for (const item of cart) {
+        const orderData = {
+          id: 'order-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9),
+          type: 'order',
+          order_id: orderId,
+          design_id: item.design_id,
+          design_name: item.design_name,
+          fabric_color: item.fabric_color,
+          thread_color: item.thread_color,
+          size: item.size,
+          quantity: item.quantity,
+          status: 'processing',
+          customer_name: customerName,
+          customer_email: customerEmail,
+          timestamp: new Date().toISOString()
+        };
+
+        if (window.dataSdk) {
+          await window.dataSdk.create(orderData);
+        }
+      }
+
+      // Clear cart
+      cart = [];
+      updateCartDisplay();
+      document.getElementById('checkout-name').value = '';
+      document.getElementById('checkout-email').value = '';
+      
+      switchTab('orders');
+    }
+
+    async function placeOrder() {
+      if (currentRecordCount >= 999) {
+        showToast('Maximum limit of 999 records reached. Please contact support.', false);
+        return;
+      }
+
+      const designId = document.getElementById('design-select').value;
+      const design = designs.find(d => d.id === designId);
+      const fabricColor = document.getElementById('fabric-color').value;
+      const threadColor = document.getElementById('thread-color').value;
+      const size = document.getElementById('size-select').value;
+      const quantity = parseInt(document.getElementById('quantity').value);
+      const customerName = document.getElementById('customer-name').value.trim();
+      const customerEmail = document.getElementById('customer-email').value.trim();
+
+      if (!customerName || !customerEmail) {
+        showToast('Please enter your name and email', false);
+        return;
+      }
+
+      const btn = document.getElementById('place-order-btn');
+      btn.disabled = true;
+      btn.textContent = 'Placing Order...';
+
+      const orderId = 'ORD-' + Date.now();
+      const orderData = {
+        id: 'order-' + Date.now(),
+        type: 'order',
+        order_id: orderId,
+        design_id: designId,
+        design_name: design.name,
+        fabric_color: fabricColor,
+        thread_color: threadColor,
+        size: size,
+        quantity: quantity,
+        status: 'pending',
+        customer_name: customerName,
+        customer_email: customerEmail,
+        timestamp: new Date().toISOString()
+      };
+
+      if (window.dataSdk) {
+        const result = await window.dataSdk.create(orderData);
+        if (result.isOk) {
+          showToast('Order placed successfully! 🎉');
+          switchTab('orders');
+        } else {
+          showToast('Failed to place order. Please try again.', false);
+        }
+      }
+
+      btn.disabled = false;
+      btn.textContent = window.elementSdk?.config?.order_button || defaultConfig.order_button;
+    }
+
+    async function sendMessage() {
+      if (currentRecordCount >= 999) {
+        showToast('Maximum limit of 999 records reached. Please contact support.', false);
+        return;
+      }
+
+      const name = document.getElementById('message-name').value.trim();
+      const email = document.getElementById('message-email').value.trim();
+      const message = document.getElementById('message-text').value.trim();
+
+      if (!name || !email || !message) {
+        showToast('Please fill in all fields', false);
+        return;
+      }
+
+      const btn = document.getElementById('send-message-btn');
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+
+      const messageData = {
+        id: 'msg-' + Date.now(),
+        type: 'message',
+        customer_name: name,
+        customer_email: email,
+        message: message,
+        timestamp: new Date().toISOString()
+      };
+
+      if (window.dataSdk) {
+        const result = await window.dataSdk.create(messageData);
+        if (result.isOk) {
+          showToast('Message sent successfully! 💬');
+          document.getElementById('message-name').value = '';
+          document.getElementById('message-email').value = '';
+          document.getElementById('message-text').value = '';
+        } else {
+          showToast('Failed to send message. Please try again.', false);
+        }
+      }
+
+      btn.disabled = false;
+      btn.textContent = 'Send Message';
+    }
+
+    function renderOrders(data) {
+      const orders = data.filter(record => record.type === 'order');
+      const orderList = document.getElementById('order-list');
+
+      if (orders.length === 0) {
+        orderList.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">📦</div>
+            <p>No orders yet. Start by customizing a design!</p>
+          </div>
+        `;
+        return;
+      }
+
+      orderList.innerHTML = orders.map(order => {
+        const date = new Date(order.timestamp);
+        return `
+          <div class="order-card">
+            <div class="order-header">
+              <span class="order-id">${order.order_id}</span>
+              <span class="status-badge status-${order.status}">${order.status.toUpperCase()}</span>
+            </div>
+            <div class="order-details">
+              <div><strong>Design:</strong> ${order.design_name}</div>
+              <div><strong>Size:</strong> ${order.size}</div>
+              <div><strong>Quantity:</strong> ${order.quantity}</div>
+              <div><strong>Date:</strong> ${date.toLocaleDateString()}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderMessages(data) {
+      const messages = data.filter(record => record.type === 'message');
+      const messageList = document.getElementById('message-list');
+
+      if (messages.length === 0) {
+        messageList.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">💬</div>
+            <p>No messages yet. Send us a message above!</p>
+          </div>
+        `;
+        return;
+      }
+
+      messageList.innerHTML = messages.map(msg => {
+        const date = new Date(msg.timestamp);
+        return `
+          <div class="message-card">
+            <div class="message-header">
+              <span class="message-sender">${msg.customer_name}</span>
+              <span>${date.toLocaleDateString()} ${date.toLocaleTimeString()}</span>
+            </div>
+            <div class="message-body">${msg.message}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function handleFabricUpload(e) {
+      const file = e.target.files[0];
+      if (file) {
+        handleFabricFile(file);
+      }
+    }
+
+    function handleFabricFile(file) {
+      if (file.size > 5 * 1024 * 1024) {
+        showToast('File size must be less than 5MB', false);
+        return;
+      }
+
+      if (!file.type.startsWith('image/')) {
+        showToast('Please upload an image file', false);
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        uploadedFabricImage = e.target.result;
+        const fabricPreview = document.getElementById('fabric-preview');
+        fabricPreview.style.backgroundImage = `url(${uploadedFabricImage})`;
+        fabricPreview.style.backgroundColor = 'transparent';
+        document.getElementById('reset-fabric-btn').style.display = 'block';
+        showToast('Fabric image uploaded! 📸');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function resetFabric() {
+      uploadedFabricImage = null;
+      const fabricPreview = document.getElementById('fabric-preview');
+      fabricPreview.style.backgroundImage = 'none';
+      fabricPreview.style.backgroundColor = document.getElementById('fabric-color').value;
+      document.getElementById('reset-fabric-btn').style.display = 'none';
+      document.getElementById('fabric-file').value = '';
+      showToast('Reset to default fabric');
+    }
+
+    function updateDesignPosition() {
+      const x = document.getElementById('position-x').value;
+      const y = document.getElementById('position-y').value;
+      const overlay = document.getElementById('design-overlay');
+      overlay.style.left = `${x}%`;
+      overlay.style.top = `${y}%`;
+    }
+
+    function addToCart() {
+      const designId = document.getElementById('design-select').value;
+      const design = designs.find(d => d.id === designId);
+      const fabricColor = document.getElementById('fabric-color').value;
+      const threadColor = document.getElementById('thread-color').value;
+      const size = document.getElementById('size-select').value;
+      const quantity = parseInt(document.getElementById('quantity').value);
+      const positionX = document.getElementById('position-x').value;
+      const positionY = document.getElementById('position-y').value;
+
+      const cartItem = {
+        id: 'cart-' + Date.now(),
+        design_id: designId,
+        design_name: design.name,
+        design_icon: design.icon,
+        fabric_color: fabricColor,
+        fabric_image: uploadedFabricImage,
+        thread_color: threadColor,
+        size: size,
+        quantity: quantity,
+        position_x: positionX,
+        position_y: positionY,
+        timestamp: new Date().toISOString()
+      };
+
+      cart.push(cartItem);
+      updateCartDisplay();
+      showToast(`${design.name} added to cart! 🛒`);
+    }
+
+    function updateCartDisplay() {
+      const cartCount = document.getElementById('cart-count');
+      const cartTotal = document.getElementById('cart-total');
+      const cartItems = document.getElementById('cart-items');
+      const cartSummary = document.getElementById('cart-summary');
+      const cartList = document.getElementById('cart-list');
+      const cartCheckout = document.getElementById('cart-checkout');
+
+      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+      cartCount.textContent = totalItems;
+      cartTotal.textContent = totalItems;
+
+      if (cart.length > 0) {
+        cartSummary.style.display = 'block';
+        cartCheckout.style.display = 'block';
+        
+        // Update cart summary in customize tab
+        cartItems.innerHTML = cart.slice(-3).map(item => `
+          <div style="font-size: 0.85rem; color: #4a5568; margin-bottom: 0.25rem;">
+            ${item.design_icon} ${item.design_name} (${item.quantity}x)
+          </div>
+        `).join('');
+
+        // Update full cart list
+        cartList.innerHTML = cart.map(item => `
+          <div class="order-card">
+            <div class="order-header">
+              <span class="order-id">${item.design_icon} ${item.design_name}</span>
+              <button class="btn btn-secondary" onclick="removeFromCart('${item.id}')" style="padding: 0.25rem 0.75rem; font-size: 0.8rem;">
+                🗑️ Remove
+              </button>
+            </div>
+            <div class="order-details">
+              <div><strong>Size:</strong> ${item.size}</div>
+              <div><strong>Quantity:</strong> ${item.quantity}</div>
+              <div><strong>Thread Color:</strong> <span style="color: ${item.thread_color};">●</span> ${item.thread_color}</div>
+              <div><strong>Position:</strong> ${item.position_x}%, ${item.position_y}%</div>
+            </div>
+          </div>
+        `).join('');
+      } else {
+        cartSummary.style.display = 'none';
+        cartCheckout.style.display = 'none';
+        cartList.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">🛒</div>
+            <p>Your cart is empty. Start customizing designs!</p>
+          </div>
+        `;
+      }
+    }
+
+    function removeFromCart(itemId) {
+      cart = cart.filter(item => item.id !== itemId);
+      updateCartDisplay();
+      showToast('Item removed from cart');
+    }
+
+    async function checkoutCart() {
+      if (cart.length === 0) {
+        showToast('Your cart is empty', false);
+        return;
+      }
+
+      if (currentRecordCount + cart.length > 999) {
+        showToast('Cannot complete order - would exceed storage limit', false);
+        return;
+      }
+
+      const customerName = document.getElementById('checkout-name').value.trim();
+      const customerEmail = document.getElementById('checkout-email').value.trim();
+
+      if (!customerName || !customerEmail) {
+        showToast('Please enter your name and email', false);
+        return;
+      }
+
+      // Calculate pricing
+      const pricing = {
+        small: 15,
+        medium: 25,
+        large: 35,
+        xlarge: 45
+      };
+
+      let orderSummary = '';
+      let total = 0;
+
+      cart.forEach(item => {
+        const itemPrice = pricing[item.size] * item.quantity;
+        total += itemPrice;
+        orderSummary += `
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span>${item.design_icon} ${item.design_name} (${item.size}, ${item.quantity}x)</span>
+            <span>$${itemPrice.toFixed(2)}</span>
+          </div>
+        `;
+      });
+
+      // Show payment modal
+      showPaymentModal(orderSummary, `$${total.toFixed(2)}`);
+    }
+
+    function showToast(message, success = true) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.style.background = success ? '#48bb78' : '#f56565';
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    function loadSavedDesigns() {
+      const saved = localStorage.getItem('customDesigns');
+      if (saved) {
+        customDesigns = JSON.parse(saved);
+        renderCustomDesigns();
+      }
+    }
+
+    // Make removeFromCart globally accessible
+    window.removeFromCart = removeFromCart;
+
+    document.addEventListener('DOMContentLoaded', initializeApp);
+  </script>
+  </div>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99b89fea959031be',t:'MTc2MjY0MjE3OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html><!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Global Embroidery Studio</title>
+  <script src="/_sdk/data_sdk.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #2d3748;
+      min-height: 100%;
+    }
+
+    html {
+      height: 100%;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    header {
+      text-align: center;
+      padding: 3rem 1rem;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      margin-bottom: 2rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin: 0 0 0.5rem 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .tagline {
+      font-size: 1.25rem;
+      color: #718096;
+      margin-bottom: 2rem;
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+
+    .tab-btn {
+      padding: 0.75rem 2rem;
+      border: none;
+      background: rgba(255, 255, 255, 0.9);
+      color: #667eea;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .tab-btn:hover {
+      background: #667eea;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .tab-btn.active {
+      background: #667eea;
+      color: white;
+    }
+
+    .tab-content {
+      display: none;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .design-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .design-card {
+      background: white;
+      border-radius: 15px;
+      padding: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .design-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+      border-color: #667eea;
+    }
+
+    .design-icon {
+      font-size: 4rem;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .design-name {
+      font-weight: 600;
+      font-size: 1.1rem;
+      text-align: center;
+      color: #2d3748;
+      margin-bottom: 0.5rem;
+    }
+
+    .design-category {
+      text-align: center;
+      color: #718096;
+      font-size: 0.9rem;
+    }
+
+    .customizer {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      .customizer {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .preview-area {
+      background: #f7fafc;
+      border-radius: 15px;
+      padding: 2rem;
+      min-height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      border: 2px dashed #cbd5e0;
+    }
+
+    .preview-content {
+      text-align: center;
+      position: relative;
+    }
+
+    .fabric-preview {
+      width: 100%;
+      max-width: 300px;
+      height: 300px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5rem;
+      position: relative;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .fabric-upload-area {
+      border: 2px dashed #cbd5e0;
+      border-radius: 10px;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 1rem;
+    }
+
+    .fabric-upload-area:hover {
+      border-color: #667eea;
+      background: rgba(102, 126, 234, 0.05);
+    }
+
+    .fabric-upload-area.dragover {
+      border-color: #667eea;
+      background: rgba(102, 126, 234, 0.1);
+    }
+
+    .upload-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.6;
+    }
+
+    .upload-text {
+      color: #718096;
+      font-size: 0.9rem;
+    }
+
+    #fabric-file {
+      display: none;
+    }
+
+    .design-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 4rem;
+      opacity: 0.9;
+      filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
+    }
+
+    .controls-area {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    label {
+      font-weight: 600;
+      color: #2d3748;
+      font-size: 0.95rem;
+    }
+
+    input, select, textarea {
+      padding: 0.75rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .color-picker-group {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    input[type="color"] {
+      width: 60px;
+      height: 60px;
+      border-radius: 10px;
+      cursor: pointer;
+      border: 2px solid #e2e8f0;
+    }
+
+    .btn {
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-primary {
+      background: #667eea;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-primary:disabled {
+      background: #cbd5e0;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-secondary {
+      background: #e2e8f0;
+      color: #2d3748;
+    }
+
+    .btn-secondary:hover {
+      background: #cbd5e0;
+    }
+
+    .order-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .order-card {
+      background: white;
+      border-radius: 15px;
+      padding: 1.5rem;
+      border-left: 4px solid #667eea;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .order-id {
+      font-weight: 700;
+      color: #667eea;
+      font-size: 1.1rem;
+    }
+
+    .status-badge {
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .status-pending {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status-processing {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .status-completed {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .order-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      color: #4a5568;
+      font-size: 0.95rem;
+    }
+
+    .message-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 1.5rem;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .message-card {
+      background: white;
+      border-radius: 15px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .message-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+      font-size: 0.9rem;
+      color: #718096;
+    }
+
+    .message-sender {
+      font-weight: 600;
+      color: #667eea;
+    }
+
+    .message-body {
+      color: #2d3748;
+      line-height: 1.6;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: #718096;
+    }
+
+    .empty-state-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: #48bb78;
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      display: none;
+      z-index: 1000;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .toast.show {
+      display: block;
+    }
+
+    .loading {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .login-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100%;
+      padding: 2rem;
+    }
+
+    .login-card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      padding: 3rem;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    .login-title {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .login-subtitle {
+      color: #718096;
+      margin-bottom: 2rem;
+      font-size: 1.1rem;
+    }
+
+    .login-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .form-group {
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #2d3748;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 1rem;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 1rem;
+    }
+
+    .login-btn:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .login-btn:disabled {
+      background: #cbd5e0;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .demo-credentials {
+      background: #f7fafc;
+      border-radius: 10px;
+      padding: 1rem;
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      color: #4a5568;
+    }
+
+    .demo-credentials strong {
+      color: #2d3748;
+    }
+
+    .main-app {
+      display: none;
+    }
+
+    .main-app.show {
+      display: block;
+    }
+
+    .ai-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-left: 0.5rem;
+    }
+
+    h2 {
+      font-size: 1.75rem;
+      margin-bottom: 1rem;
+      color: #2d3748;
+    }
+
+    h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+      color: #2d3748;
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body><!-- Login Page -->
+  <div class="login-container" id="login-page">
+   <div class="login-card">
+    <h1 class="login-title">🧵</h1>
+    <h2 class="login-title" id="login-platform-title">EmbroiTech</h2>
+    <p class="login-subtitle">Sign in to modernize your embroidery design experience</p>
+    <form class="login-form" id="login-form">
+     <div class="form-group"><label for="login-email">Email Address</label> <input type="email" id="login-email" placeholder="Enter your email" required>
+     </div>
+     <div class="form-group"><label for="login-password">Password</label> <input type="password" id="login-password" placeholder="Enter your password" required>
+     </div><button type="submit" class="login-btn" id="login-btn">Sign In</button>
+    </form>
+    <div class="demo-credentials"><strong>Demo Credentials:</strong><br>
+      Email: demo@embroidery.com<br>
+      Password: demo123
+    </div>
+   </div>
+  </div><!-- Main Application -->
+  <div class="main-app" id="main-app">
+   <div class="container">
+    <header>
+     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+      <div style="flex: 1;"></div>
+      <div style="text-align: center; flex: 2;">
+       <h1 id="platform-title">Global Embroidery Studio</h1>
+       <p class="tagline" id="tagline">Discover &amp; Customize Embroidery Designs</p>
+      </div>
+      <div style="flex: 1; text-align: right;"><button class="btn btn-secondary" id="logout-btn" style="padding: 0.5rem 1rem; font-size: 0.9rem;"> 🚪 Logout </button>
+      </div>
+     </div>
+     <div class="nav-tabs"><button class="tab-btn active" data-tab="home">🏠 Home</button> <button class="tab-btn" data-tab="discover">🌍 Discover Designs</button> <button class="tab-btn" data-tab="customize">✨ Customize</button> <button class="tab-btn" data-tab="draw">🎨 Draw Design</button> <button class="tab-btn" data-tab="cart">🛒 Cart (<span id="cart-count">0</span>)</button> <button class="tab-btn" data-tab="orders">📦 My Orders</button> <button class="tab-btn" data-tab="contact">💬 Contact Team</button> <button class="tab-btn" data-tab="chat">💬 Live Chat</button>
+     </div>
+    </header>
+    <div id="home" class="tab-content active">
+     <div style="text-align: center; padding: 2rem 0;">
+      <h2>Welcome to EmbroiTech Platform</h2>
+      <p style="color: #718096; font-size: 1.2rem; margin-bottom: 3rem;">Modernizing embroidery design visualization, customization, and ordering for traditional Indian garments</p>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
+       <div style="background: white; border-radius: 15px; padding: 2rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">
+         🧵
+        </div>
+        <h3>Traditional Design Library</h3>
+        <p style="color: #718096; margin-bottom: 1.5rem;">Browse authentic embroidery patterns for kurti, anarkali, saree, lehenga and more traditional garments</p><button class="btn btn-primary" onclick="switchTab('discover')">Explore Designs</button>
+       </div>
+       <div style="background: white; border-radius: 15px; padding: 2rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">
+         📱
+        </div>
+        <h3>AI-Powered Visualization</h3>
+        <p style="color: #718096; margin-bottom: 1.5rem;">Upload your fabric photos and see realistic previews of how embroidery will look before ordering</p><button class="btn btn-primary" onclick="switchTab('customize')">Start Visualizing</button>
+       </div>
+       <div style="background: white; border-radius: 15px; padding: 2rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">
+         🎨
+        </div>
+        <h3>Custom Design Studio</h3>
+        <p style="color: #718096; margin-bottom: 1.5rem;">Create your own embroidery patterns with professional drawing tools and save them for future use</p><button class="btn btn-primary" onclick="switchTab('draw')">Start Creating</button>
+       </div>
+      </div>
+      <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 20px; padding: 3rem; margin: 2rem 0;">
+       <h3 style="color: white; margin-bottom: 1rem;">Why Choose EmbroiTech?</h3>
+       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; text-align: left;">
+        <div>
+         <h4 style="color: white;">🧵 Traditional Expertise</h4>
+         <p>Authentic patterns for kurti, anarkali, saree, lehenga with traditional techniques like chikankari, zardozi, mirror work</p>
+        </div>
+        <div>
+         <h4 style="color: white;">📱 Digital Innovation</h4>
+         <p>AI-powered fabric visualization lets you see exactly how embroidery will look before ordering</p>
+        </div>
+        <div>
+         <h4 style="color: white;">🎨 Complete Customization</h4>
+         <p>Adjust colors, placement, size and create custom designs with professional drawing tools</p>
+        </div>
+        <div>
+         <h4 style="color: white;">💬 Expert Support</h4>
+         <p>Chat with embroidery specialists who understand traditional techniques and modern requirements</p>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div id="discover" class="tab-content">
+     <h2>Browse Traditional Embroidery Designs</h2>
+     <p style="color: #718096; margin-bottom: 1rem;">Discover authentic patterns for kurti, anarkali, saree, lehenga and more. Select a design to start customizing.</p>
+     <div style="display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap;"><button class="btn btn-secondary filter-btn active" data-filter="all">All Designs</button> <button class="btn btn-secondary filter-btn" data-filter="Traditional">Traditional</button> <button class="btn btn-secondary filter-btn" data-filter="Floral">Floral</button> <button class="btn btn-secondary filter-btn" data-filter="Mirror Work">Mirror Work</button> <button class="btn btn-secondary filter-btn" data-filter="Chikankari">Chikankari</button> <button class="btn btn-secondary filter-btn" data-filter="Zardozi">Zardozi</button>
+     </div>
+     <div class="design-grid" id="design-grid"></div>
+    </div>
+    <div id="customize" class="tab-content">
+     <h2>Customize Your Design <span class="ai-badge">AI Preview</span></h2>
+     <div class="customizer">
+      <div class="preview-area">
+       <div class="preview-content">
+        <div class="fabric-preview" id="fabric-preview">
+         <div class="design-overlay" id="design-overlay">
+          🌸
+         </div>
+        </div>
+        <p style="margin-top: 1rem; color: #718096; font-size: 0.9rem;">AI-assisted preview on your fabric</p>
+       </div>
+      </div>
+      <div class="controls-area">
+       <div class="control-group"><label for="design-select">Select Design</label> <select id="design-select"></select>
+       </div>
+       <div class="control-group"><label>Upload Your Fabric Image</label>
+        <div class="fabric-upload-area" id="fabric-upload-area">
+         <div class="upload-icon">
+          📸
+         </div>
+         <div class="upload-text"><strong>Click to upload</strong> or drag &amp; drop your fabric image<br><small>JPG, PNG up to 5MB</small>
+         </div>
+        </div><input type="file" id="fabric-file" accept="image/*"> <button class="btn btn-secondary" id="reset-fabric-btn" style="width: 100%; margin-top: 0.5rem; display: none;"> 🔄 Use Default Fabric </button>
+       </div>
+       <div class="control-group"><label>Fabric Color (if no image)</label>
+        <div class="color-picker-group"><input type="color" id="fabric-color" value="#ffffff"> <span id="fabric-color-label">#ffffff</span>
+        </div>
+       </div>
+       <div class="control-group"><label>Thread Color</label>
+        <div class="color-picker-group"><input type="color" id="thread-color" value="#ff6b9d"> <span id="thread-color-label">#ff6b9d</span>
+        </div>
+       </div>
+       <div class="control-group"><label for="size-select">Size</label> <select id="size-select"> <option value="small">Small (5cm x 5cm)</option> <option value="medium" selected>Medium (10cm x 10cm)</option> <option value="large">Large (15cm x 15cm)</option> <option value="xlarge">Extra Large (20cm x 20cm)</option> </select>
+       </div>
+       <div class="control-group"><label>Position on Fabric</label>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+         <div><label for="position-x" style="font-size: 0.8rem; color: #718096;">Horizontal</label> <input type="range" id="position-x" min="0" max="100" value="50" style="width: 100%;">
+         </div>
+         <div><label for="position-y" style="font-size: 0.8rem; color: #718096;">Vertical</label> <input type="range" id="position-y" min="0" max="100" value="50" style="width: 100%;">
+         </div>
+        </div>
+       </div>
+       <div class="control-group"><label for="quantity">Quantity</label> <input type="number" id="quantity" min="1" value="1">
+       </div>
+       <div class="control-group"><label for="customer-name">Your Name</label> <input type="text" id="customer-name" placeholder="Enter your name">
+       </div>
+       <div class="control-group"><label for="customer-email">Email</label> <input type="email" id="customer-email" placeholder="your@email.com">
+       </div>
+       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;"><button class="btn btn-secondary" id="add-to-cart-btn"> 🛒 Add to Cart </button> <button class="btn btn-primary" id="place-order-btn"> <span id="order-button-text">Place Order</span> </button>
+       </div>
+       <div id="cart-summary" style="margin-top: 1rem; padding: 1rem; background: #f7fafc; border-radius: 10px; display: none;">
+        <h4 style="margin: 0 0 0.5rem 0; color: #2d3748;">Cart Summary</h4>
+        <div id="cart-items"></div>
+        <div style="border-top: 1px solid #e2e8f0; margin-top: 0.5rem; padding-top: 0.5rem;"><strong>Total Items: <span id="cart-total">0</span></strong>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div id="draw" class="tab-content">
+     <h2>Draw Your Own Design <span class="ai-badge">Creative Studio</span></h2>
+     <p style="color: #718096; margin-bottom: 2rem;">Create custom embroidery patterns with our drawing tools</p>
+     <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+      <div style="background: white; border-radius: 15px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);">
+       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h3 style="margin: 0;">Drawing Canvas</h3>
+        <div style="display: flex; gap: 0.5rem;"><button class="btn btn-secondary" id="clear-canvas" style="padding: 0.5rem 1rem; font-size: 0.9rem;">🗑️ Clear</button> <button class="btn btn-primary" id="save-design" style="padding: 0.5rem 1rem; font-size: 0.9rem;">💾 Save Design</button>
+        </div>
+       </div>
+       <canvas id="drawing-canvas" width="500" height="400" style="border: 2px solid #e2e8f0; border-radius: 10px; cursor: crosshair; width: 100%; max-width: 500px; height: auto;"></canvas>
+      </div>
+      <div style="background: white; border-radius: 15px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);">
+       <h3>Drawing Tools</h3>
+       <div class="control-group"><label>Brush Color</label>
+        <div class="color-picker-group"><input type="color" id="brush-color" value="#667eea"> <span id="brush-color-label">#667eea</span>
+        </div>
+       </div>
+       <div class="control-group"><label for="brush-size">Brush Size: <span id="brush-size-value">5</span>px</label> <input type="range" id="brush-size" min="1" max="20" value="5" style="width: 100%;">
+       </div>
+       <div class="control-group"><label>Drawing Mode</label> <select id="drawing-mode"> <option value="brush">🖌️ Brush</option> <option value="line">📏 Straight Line</option> <option value="circle">⭕ Circle</option> <option value="rectangle">⬜ Rectangle</option> </select>
+       </div>
+       <div class="control-group"><label for="design-name-input">Design Name</label> <input type="text" id="design-name-input" placeholder="My Custom Design" value="My Custom Design">
+       </div>
+       <div style="margin-top: 2rem; padding: 1rem; background: #f7fafc; border-radius: 10px;">
+        <h4 style="margin: 0 0 0.5rem 0; font-size: 0.9rem;">💡 Tips:</h4>
+        <ul style="font-size: 0.8rem; color: #718096; margin: 0; padding-left: 1.2rem;">
+         <li>Use simple, bold strokes for best embroidery results</li>
+         <li>Avoid very thin lines (less than 3px)</li>
+         <li>Keep designs under 15cm for optimal quality</li>
+         <li>Save your design to use in customization</li>
+        </ul>
+       </div>
+      </div>
+     </div>
+     <div id="saved-designs" style="margin-top: 2rem;">
+      <h3>Your Saved Designs</h3>
+      <div id="custom-designs-grid" class="design-grid"></div>
+     </div>
+    </div>
+    <div id="cart" class="tab-content">
+     <h2>Shopping Cart</h2>
+     <p style="color: #718096; margin-bottom: 1.5rem;">Review your customized designs before ordering</p>
+     <div id="cart-list" class="order-list"></div>
+     <div id="cart-checkout" style="margin-top: 2rem; padding: 1.5rem; background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); display: none;">
+      <h3>Checkout Information</h3>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+       <div class="control-group"><label for="checkout-name">Your Name</label> <input type="text" id="checkout-name" placeholder="Enter your name">
+       </div>
+       <div class="control-group"><label for="checkout-email">Email</label> <input type="email" id="checkout-email" placeholder="your@email.com">
+       </div>
+      </div><button class="btn btn-primary" id="checkout-btn" style="width: 100%;"> Complete Order </button>
+     </div>
+    </div>
+    <div id="orders" class="tab-content">
+     <h2>Track Your Orders</h2>
+     <p style="color: #718096; margin-bottom: 1rem;">Monitor the status of your embroidery orders</p>
+     <div class="order-list" id="order-list"></div>
+    </div>
+    <div id="contact" class="tab-content">
+     <h2 id="contact-heading">Questions? Let's Talk</h2>
+     <p style="color: #718096; margin-bottom: 1.5rem;">Send a message to our embroidery team</p>
+     <div class="control-group"><label for="message-name">Your Name</label> <input type="text" id="message-name" placeholder="Enter your name">
+     </div>
+     <div class="control-group" style="margin-top: 1rem;"><label for="message-email">Email</label> <input type="email" id="message-email" placeholder="your@email.com">
+     </div>
+     <div class="control-group" style="margin-top: 1rem;"><label for="message-text">Message</label> <textarea id="message-text" rows="5" placeholder="How can we help you?"></textarea>
+     </div><button class="btn btn-primary" id="send-message-btn" style="margin-top: 1rem;">Send Message</button>
+     <h3 style="margin-top: 2rem;">Your Messages</h3>
+     <div class="message-list" id="message-list"></div>
+    </div>
+    <div id="chat" class="tab-content">
+     <h2>Live Chat Support</h2>
+     <p style="color: #718096; margin-bottom: 1.5rem;">Chat with our embroidery experts in real-time</p>
+     <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem; max-width: 800px;">
+      <div style="background: white; border-radius: 15px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); height: 400px; display: flex; flex-direction: column;">
+       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #e2e8f0;">
+        <h3 style="margin: 0;">Chat with Support Team</h3>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+         <div style="width: 8px; height: 8px; background: #48bb78; border-radius: 50%;"></div><span style="font-size: 0.9rem; color: #48bb78; font-weight: 600;">Online</span>
+        </div>
+       </div>
+       <div id="chat-messages" style="flex: 1; overflow-y: auto; padding: 1rem; background: #f7fafc; border-radius: 10px; margin-bottom: 1rem;">
+        <div style="background: #e2e8f0; padding: 0.75rem; border-radius: 10px; margin-bottom: 1rem; max-width: 80%;">
+         <div style="font-size: 0.8rem; color: #718096; margin-bottom: 0.25rem;">
+          Support Team • Just now
+         </div>
+         <div>
+          Hello! 👋 Welcome to EmbroiTech support. How can I help you with your embroidery needs today?
+         </div>
+        </div>
+       </div>
+       <div style="display: flex; gap: 0.5rem;"><input type="text" id="chat-input" placeholder="Type your message..." style="flex: 1; padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 10px;"> <button class="btn btn-primary" id="send-chat-btn" style="padding: 0.75rem 1.5rem;">Send</button>
+       </div>
+      </div>
+      <div style="background: white; border-radius: 15px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);">
+       <h3>Quick Help Topics</h3>
+       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;"><button class="btn btn-secondary quick-help-btn" data-message="How do I upload my fabric image?">📸 Upload Fabric</button> <button class="btn btn-secondary quick-help-btn" data-message="What file formats do you accept for custom designs?">📁 File Formats</button> <button class="btn btn-secondary quick-help-btn" data-message="How long does embroidery take?">⏰ Processing Time</button> <button class="btn btn-secondary quick-help-btn" data-message="What are your shipping options?">🚚 Shipping Info</button> <button class="btn btn-secondary quick-help-btn" data-message="Can I modify my order after placing it?">✏️ Order Changes</button> <button class="btn btn-secondary quick-help-btn" data-message="What's the maximum design size?">📏 Size Limits</button>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div><!-- Payment Modal -->
+   <div id="payment-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000; align-items: center; justify-content: center;">
+    <div style="background: white; border-radius: 20px; padding: 2rem; max-width: 500px; width: 90%; max-height: 90%; overflow-y: auto;">
+     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+      <h2 style="margin: 0;">Secure Payment</h2><button id="close-payment-modal" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">✕</button>
+     </div>
+     <div id="payment-content">
+      <div style="background: #f7fafc; border-radius: 10px; padding: 1.5rem; margin-bottom: 2rem;">
+       <h3 style="margin: 0 0 1rem 0;">Order Summary</h3>
+       <div id="payment-order-summary"></div>
+       <div style="border-top: 1px solid #e2e8f0; margin-top: 1rem; padding-top: 1rem;">
+        <div style="display: flex; justify-content: space-between; font-weight: 600; font-size: 1.1rem;"><span>Total:</span> <span id="payment-total">$0.00</span>
+        </div>
+       </div>
+      </div>
+      <form id="payment-form">
+       <div class="control-group"><label for="card-number">Card Number</label> <input type="text" id="card-number" placeholder="1234 5678 9012 3456" maxlength="19">
+       </div>
+       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="control-group"><label for="expiry-date">Expiry Date</label> <input type="text" id="expiry-date" placeholder="MM/YY" maxlength="5">
+        </div>
+        <div class="control-group"><label for="cvv">CVV</label> <input type="text" id="cvv" placeholder="123" maxlength="3">
+        </div>
+       </div>
+       <div class="control-group"><label for="cardholder-name">Cardholder Name</label> <input type="text" id="cardholder-name" placeholder="John Doe">
+       </div>
+       <div class="control-group"><label for="billing-address">Billing Address</label> <textarea id="billing-address" rows="3" placeholder="123 Main St, City, State, ZIP"></textarea>
+       </div><button type="submit" class="btn btn-primary" id="process-payment-btn" style="width: 100%; margin-top: 1rem;"> 🔒 Process Secure Payment </button>
+      </form>
+      <div style="text-align: center; margin-top: 1rem; font-size: 0.9rem; color: #718096;">
+       <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.5rem;"><span>🔒</span> <span>Secured by 256-bit SSL encryption</span>
+       </div>
+       <div>
+        💳 We accept Visa, MasterCard, American Express
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="toast" id="toast"></div>
+   <script>
+    const designs = [
+      { id: 'd1', name: 'Paisley Border', icon: '🌿', category: 'Traditional', garment: 'Kurti' },
+      { id: 'd2', name: 'Mirror Work Mandala', icon: '✨', category: 'Mirror Work', garment: 'Anarkali' },
+      { id: 'd3', name: 'Floral Vine', icon: '🌸', category: 'Floral', garment: 'Saree' },
+      { id: 'd4', name: 'Geometric Pattern', icon: '🔷', category: 'Geometric', garment: 'Lehenga' },
+      { id: 'd5', name: 'Peacock Motif', icon: '🦚', category: 'Traditional', garment: 'Saree' },
+      { id: 'd6', name: 'Rose Bouquet', icon: '🌹', category: 'Floral', garment: 'Kurti' },
+      { id: 'd7', name: 'Lotus Chain', icon: '🪷', category: 'Traditional', garment: 'Anarkali' },
+      { id: 'd8', name: 'Zardozi Border', icon: '👑', category: 'Zardozi', garment: 'Lehenga' },
+      { id: 'd9', name: 'Butterfly Garden', icon: '🦋', category: 'Floral', garment: 'Kurti' },
+      { id: 'd10', name: 'Rajasthani Mirror', icon: '🪞', category: 'Mirror Work', garment: 'Lehenga' },
+      { id: 'd11', name: 'Mogul Arch', icon: '🕌', category: 'Traditional', garment: 'Anarkali' },
+      { id: 'd12', name: 'Marigold Border', icon: '🌼', category: 'Floral', garment: 'Saree' },
+      { id: 'd13', name: 'Chikankari Vine', icon: '🌱', category: 'Chikankari', garment: 'Kurti' },
+      { id: 'd14', name: 'Phulkari Bloom', icon: '🌺', category: 'Phulkari', garment: 'Dupatta' },
+      { id: 'd15', name: 'Kantha Stitch', icon: '🧵', category: 'Kantha', garment: 'Saree' },
+      { id: 'd16', name: 'Gota Work Border', icon: '✨', category: 'Gota Work', garment: 'Lehenga' }
+    ];
+
+    const defaultConfig = {
+      platform_title: 'EmbroiTech',
+      tagline: 'Modernizing Embroidery Design & Visualization',
+      cta_button: 'Explore Designs',
+      order_button: 'Place Order',
+      contact_heading: "Connect with Embroidery Experts",
+      background_color: '#667eea',
+      surface_color: '#ffffff',
+      text_color: '#2d3748',
+      primary_action_color: '#667eea',
+      secondary_action_color: '#e2e8f0',
+      font_family: 'Inter',
+      font_size: 16
+    };
+
+    let currentRecordCount = 0;
+    let allRecords = [];
+    let isLoggedIn = false;
+    let cart = [];
+    let uploadedFabricImage = null;
+    let customDesigns = [];
+    let chatMessages = [];
+    
+    // Drawing canvas variables
+    let canvas, ctx;
+    let isDrawing = false;
+    let startX, startY;
+    let currentTool = 'brush';
+
+    const dataHandler = {
+      onDataChanged(data) {
+        allRecords = data;
+        currentRecordCount = data.length;
+        renderOrders(data);
+        renderMessages(data);
+      }
+    };
+
+    async function initializeApp() {
+      // Check if user is already logged in
+      const savedLogin = localStorage.getItem('embroidery_login');
+      if (savedLogin) {
+        isLoggedIn = true;
+        showMainApp();
+      } else {
+        showLoginPage();
+      }
+
+      if (window.dataSdk) {
+        const initResult = await window.dataSdk.init(dataHandler);
+        if (!initResult.isOk) {
+          console.error('Failed to initialize data SDK');
+        }
+      }
+
+      if (window.elementSdk) {
+        await window.elementSdk.init({
+          defaultConfig,
+          onConfigChange: async (config) => {
+            const customFont = config.font_family || defaultConfig.font_family;
+            const baseSize = config.font_size || defaultConfig.font_size;
+            const baseFontStack = '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+
+            document.body.style.fontFamily = `${customFont}, ${baseFontStack}`;
+            document.body.style.fontSize = `${baseSize}px`;
+            document.body.style.background = `linear-gradient(135deg, ${config.background_color || defaultConfig.background_color} 0%, ${config.primary_action_color || defaultConfig.primary_action_color} 100%)`;
+            document.body.style.color = config.text_color || defaultConfig.text_color;
+
+            const header = document.querySelector('header');
+            header.style.background = `rgba(255, 255, 255, 0.95)`;
+
+            const h1 = document.querySelector('h1');
+            h1.style.fontSize = `${baseSize * 2}px`;
+            h1.style.background = `linear-gradient(135deg, ${config.background_color || defaultConfig.background_color} 0%, ${config.primary_action_color || defaultConfig.primary_action_color} 100%)`;
+            h1.style.webkitBackgroundClip = 'text';
+            h1.style.webkitTextFillColor = 'transparent';
+            h1.style.backgroundClip = 'text';
+
+            document.querySelectorAll('h2').forEach(el => {
+              el.style.fontSize = `${baseSize * 1.75}px`;
+              el.style.color = config.text_color || defaultConfig.text_color;
+            });
+
+            document.querySelectorAll('h3').forEach(el => {
+              el.style.fontSize = `${baseSize * 1.25}px`;
+              el.style.color = config.text_color || defaultConfig.text_color;
+            });
+
+            document.querySelector('.tagline').style.fontSize = `${baseSize * 1.25}px`;
+
+            document.querySelectorAll('.btn-primary').forEach(btn => {
+              btn.style.background = config.primary_action_color || defaultConfig.primary_action_color;
+            });
+
+            document.querySelectorAll('.btn-secondary').forEach(btn => {
+              btn.style.background = config.secondary_action_color || defaultConfig.secondary_action_color;
+            });
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+              btn.style.color = config.primary_action_color || defaultConfig.primary_action_color;
+            });
+
+            document.querySelectorAll('.tab-btn.active').forEach(btn => {
+              btn.style.background = config.primary_action_color || defaultConfig.primary_action_color;
+              btn.style.color = config.surface_color || defaultConfig.surface_color;
+            });
+
+            document.getElementById('platform-title').textContent = config.platform_title || defaultConfig.platform_title;
+            document.getElementById('tagline').textContent = config.tagline || defaultConfig.tagline;
+            document.getElementById('order-button-text').textContent = config.order_button || defaultConfig.order_button;
+            document.getElementById('contact-heading').textContent = config.contact_heading || defaultConfig.contact_heading;
+          },
+          mapToCapabilities: (config) => ({
+            recolorables: [
+              {
+                get: () => config.background_color || defaultConfig.background_color,
+                set: (value) => {
+                  if (window.elementSdk) {
+                    window.elementSdk.config.background_color = value;
+                    window.elementSdk.setConfig({ background_color: value });
+                  }
+                }
+              },
+              {
+                get: () => config.surface_color || defaultConfig.surface_color,
+                set: (value) => {
+                  if (window.elementSdk) {
+                    window.elementSdk.config.surface_color = value;
+                    window.elementSdk.setConfig({ surface_color: value });
+                  }
+                }
+              },
+              {
+                get: () => config.text_color || defaultConfig.text_color,
+                set: (value) => {
+                  if (window.elementSdk) {
+                    window.elementSdk.config.text_color = value;
+                    window.elementSdk.setConfig({ text_color: value });
+                  }
+                }
+              },
+              {
+                get: () => config.primary_action_color || defaultConfig.primary_action_color,
+                set: (value) => {
+                  if (window.elementSdk) {
+                    window.elementSdk.config.primary_action_color = value;
+                    window.elementSdk.setConfig({ primary_action_color: value });
+                  }
+                }
+              },
+              {
+                get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
+                set: (value) => {
+                  if (window.elementSdk) {
+                    window.elementSdk.config.secondary_action_color = value;
+                    window.elementSdk.setConfig({ secondary_action_color: value });
+                  }
+                }
+              }
+            ],
+            borderables: [],
+            fontEditable: {
+              get: () => config.font_family || defaultConfig.font_family,
+              set: (value) => {
+                if (window.elementSdk) {
+                  window.elementSdk.config.font_family = value;
+                  window.elementSdk.setConfig({ font_family: value });
+                }
+              }
+            },
+            fontSizeable: {
+              get: () => config.font_size || defaultConfig.font_size,
+              set: (value) => {
+                if (window.elementSdk) {
+                  window.elementSdk.config.font_size = value;
+                  window.elementSdk.setConfig({ font_size: value });
+                }
+              }
+            }
+          }),
+          mapToEditPanelValues: (config) => new Map([
+            ['platform_title', config.platform_title || defaultConfig.platform_title],
+            ['tagline', config.tagline || defaultConfig.tagline],
+            ['cta_button', config.cta_button || defaultConfig.cta_button],
+            ['order_button', config.order_button || defaultConfig.order_button],
+            ['contact_heading', config.contact_heading || defaultConfig.contact_heading]
+          ])
+        });
+      }
+
+      renderDesigns();
+      populateDesignSelect();
+      setupEventListeners();
+      setupLoginListeners();
+      initializeDrawingCanvas();
+      setupChatListeners();
+      setupPaymentModal();
+      loadSavedDesigns();
+    }
+
+    function showLoginPage() {
+      document.getElementById('login-page').style.display = 'flex';
+      document.getElementById('main-app').classList.remove('show');
+    }
+
+    function showMainApp() {
+      document.getElementById('login-page').style.display = 'none';
+      document.getElementById('main-app').classList.add('show');
+    }
+
+    function setupLoginListeners() {
+      document.getElementById('login-form').addEventListener('submit', handleLogin);
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value.trim();
+      const loginBtn = document.getElementById('login-btn');
+
+      if (!email || !password) {
+        showToast('Please enter both email and password', false);
+        return;
+      }
+
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'Signing In...';
+
+      // Simulate login validation (demo credentials)
+      setTimeout(() => {
+        if (email === 'demo@embroidery.com' && password === 'demo123') {
+          isLoggedIn = true;
+          localStorage.setItem('embroidery_login', 'true');
+          showToast('Welcome to Global Embroidery Studio! 🎉');
+          showMainApp();
+        } else {
+          showToast('Invalid credentials. Please use demo@embroidery.com / demo123', false);
+        }
+        
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Sign In';
+      }, 1000);
+    }
+
+    function handleLogout() {
+      localStorage.removeItem('embroidery_login');
+      isLoggedIn = false;
+      document.getElementById('login-email').value = '';
+      document.getElementById('login-password').value = '';
+      showToast('Logged out successfully');
+      showLoginPage();
+    }
+
+    function renderDesigns(filter = 'all') {
+      const grid = document.getElementById('design-grid');
+      const filteredDesigns = filter === 'all' ? designs : designs.filter(d => d.category === filter);
+      
+      grid.innerHTML = filteredDesigns.map(design => `
+        <div class="design-card" data-design-id="${design.id}">
+          <div class="design-icon">${design.icon}</div>
+          <div class="design-name">${design.name}</div>
+          <div class="design-category">${design.category}</div>
+          <div style="font-size: 0.8rem; color: #9ca3af; margin-top: 0.25rem;">For ${design.garment}</div>
+        </div>
+      `).join('');
+
+      document.querySelectorAll('.design-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const designId = card.dataset.designId;
+          const design = designs.find(d => d.id === designId);
+          document.getElementById('design-select').value = designId;
+          document.getElementById('design-overlay').textContent = design.icon;
+          switchTab('customize');
+        });
+      });
+      
+      // Setup filter buttons
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          renderDesigns(btn.dataset.filter);
+        });
+      });
+    }
+
+    function populateDesignSelect() {
+      const select = document.getElementById('design-select');
+      select.innerHTML = designs.map(design => 
+        `<option value="${design.id}">${design.icon} ${design.name}</option>`
+      ).join('');
+    }
+
+    function setupEventListeners() {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          switchTab(btn.dataset.tab);
+        });
+      });
+
+      document.getElementById('design-select').addEventListener('change', (e) => {
+        const design = designs.find(d => d.id === e.target.value);
+        document.getElementById('design-overlay').textContent = design.icon;
+      });
+
+      document.getElementById('fabric-color').addEventListener('input', (e) => {
+        document.getElementById('fabric-preview').style.background = e.target.value;
+        document.getElementById('fabric-color-label').textContent = e.target.value;
+      });
+
+      document.getElementById('thread-color').addEventListener('input', (e) => {
+        document.getElementById('design-overlay').style.color = e.target.value;
+        document.getElementById('thread-color-label').textContent = e.target.value;
+      });
+
+      document.getElementById('place-order-btn').addEventListener('click', placeOrder);
+      document.getElementById('send-message-btn').addEventListener('click', sendMessage);
+      document.getElementById('logout-btn').addEventListener('click', handleLogout);
+      document.getElementById('add-to-cart-btn').addEventListener('click', addToCart);
+      document.getElementById('checkout-btn').addEventListener('click', checkoutCart);
+
+      // Fabric upload handlers
+      document.getElementById('fabric-upload-area').addEventListener('click', () => {
+        document.getElementById('fabric-file').click();
+      });
+
+      document.getElementById('fabric-file').addEventListener('change', handleFabricUpload);
+      document.getElementById('reset-fabric-btn').addEventListener('click', resetFabric);
+
+      // Drag and drop for fabric upload
+      const uploadArea = document.getElementById('fabric-upload-area');
+      uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('dragover');
+      });
+
+      uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('dragover');
+      });
+
+      uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+          handleFabricFile(files[0]);
+        }
+      });
+
+      // Position controls
+      document.getElementById('position-x').addEventListener('input', updateDesignPosition);
+      document.getElementById('position-y').addEventListener('input', updateDesignPosition);
+    }
+
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.tab === tabName) {
+          btn.classList.add('active');
+        }
+      });
+
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      document.getElementById(tabName).classList.add('active');
+    }
+
+    function initializeDrawingCanvas() {
+      canvas = document.getElementById('drawing-canvas');
+      if (!canvas) return;
+      
+      ctx = canvas.getContext('2d');
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      
+      // Canvas event listeners
+      canvas.addEventListener('mousedown', startDrawing);
+      canvas.addEventListener('mousemove', draw);
+      canvas.addEventListener('mouseup', stopDrawing);
+      canvas.addEventListener('mouseout', stopDrawing);
+      
+      // Touch events for mobile
+      canvas.addEventListener('touchstart', handleTouch);
+      canvas.addEventListener('touchmove', handleTouch);
+      canvas.addEventListener('touchend', stopDrawing);
+      
+      // Tool controls
+      document.getElementById('brush-color').addEventListener('input', (e) => {
+        document.getElementById('brush-color-label').textContent = e.target.value;
+      });
+      
+      document.getElementById('brush-size').addEventListener('input', (e) => {
+        document.getElementById('brush-size-value').textContent = e.target.value;
+      });
+      
+      document.getElementById('drawing-mode').addEventListener('change', (e) => {
+        currentTool = e.target.value;
+      });
+      
+      document.getElementById('clear-canvas').addEventListener('click', clearCanvas);
+      document.getElementById('save-design').addEventListener('click', saveCustomDesign);
+    }
+
+    function startDrawing(e) {
+      isDrawing = true;
+      const rect = canvas.getBoundingClientRect();
+      startX = (e.clientX - rect.left) * (canvas.width / rect.width);
+      startY = (e.clientY - rect.top) * (canvas.height / rect.height);
+      
+      ctx.strokeStyle = document.getElementById('brush-color').value;
+      ctx.lineWidth = document.getElementById('brush-size').value;
+      
+      if (currentTool === 'brush') {
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+      }
+    }
+
+    function draw(e) {
+      if (!isDrawing) return;
+      
+      const rect = canvas.getBoundingClientRect();
+      const currentX = (e.clientX - rect.left) * (canvas.width / rect.width);
+      const currentY = (e.clientY - rect.top) * (canvas.height / rect.height);
+      
+      if (currentTool === 'brush') {
+        ctx.lineTo(currentX, currentY);
+        ctx.stroke();
+      }
+    }
+
+    function stopDrawing(e) {
+      if (!isDrawing) return;
+      isDrawing = false;
+      
+      if (currentTool !== 'brush') {
+        const rect = canvas.getBoundingClientRect();
+        const endX = (e.clientX - rect.left) * (canvas.width / rect.width);
+        const endY = (e.clientY - rect.top) * (canvas.height / rect.height);
+        
+        ctx.beginPath();
+        
+        switch (currentTool) {
+          case 'line':
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(endX, endY);
+            break;
+          case 'rectangle':
+            ctx.rect(startX, startY, endX - startX, endY - startY);
+            break;
+          case 'circle':
+            const radius = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
+            ctx.arc(startX, startY, radius, 0, 2 * Math.PI);
+            break;
+        }
+        
+        ctx.stroke();
+      }
+    }
+
+    function handleTouch(e) {
+      e.preventDefault();
+      const touch = e.touches[0];
+      const mouseEvent = new MouseEvent(e.type === 'touchstart' ? 'mousedown' : 
+                                       e.type === 'touchmove' ? 'mousemove' : 'mouseup', {
+        clientX: touch.clientX,
+        clientY: touch.clientY
+      });
+      canvas.dispatchEvent(mouseEvent);
+    }
+
+    function clearCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function saveCustomDesign() {
+      const designName = document.getElementById('design-name-input').value.trim();
+      if (!designName) {
+        showToast('Please enter a design name', false);
+        return;
+      }
+      
+      const dataURL = canvas.toDataURL();
+      const customDesign = {
+        id: 'custom-' + Date.now(),
+        name: designName,
+        dataURL: dataURL,
+        timestamp: new Date().toISOString()
+      };
+      
+      customDesigns.push(customDesign);
+      localStorage.setItem('customDesigns', JSON.stringify(customDesigns));
+      
+      renderCustomDesigns();
+      showToast(`Design "${designName}" saved! 🎨`);
+      
+      // Clear canvas and reset name
+      clearCanvas();
+      document.getElementById('design-name-input').value = 'My Custom Design';
+    }
+
+    function renderCustomDesigns() {
+      const grid = document.getElementById('custom-designs-grid');
+      if (!grid) return;
+      
+      if (customDesigns.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">🎨</div>
+            <p>No custom designs yet. Start drawing above!</p>
+          </div>
+        `;
+        return;
+      }
+      
+      grid.innerHTML = customDesigns.map(design => `
+        <div class="design-card" data-design-id="${design.id}">
+          <div style="width: 100%; height: 120px; background-image: url(${design.dataURL}); background-size: contain; background-repeat: no-repeat; background-position: center; border-radius: 10px; margin-bottom: 1rem;"></div>
+          <div class="design-name">${design.name}</div>
+          <div class="design-category">Custom Design</div>
+        </div>
+      `).join('');
+      
+      // Add click handlers for custom designs
+      document.querySelectorAll('#custom-designs-grid .design-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const designId = card.dataset.designId;
+          const design = customDesigns.find(d => d.id === designId);
+          if (design) {
+            // Add to design select
+            const select = document.getElementById('design-select');
+            const option = document.createElement('option');
+            option.value = designId;
+            option.textContent = `🎨 ${design.name}`;
+            select.appendChild(option);
+            select.value = designId;
+            
+            // Update preview
+            const overlay = document.getElementById('design-overlay');
+            overlay.innerHTML = `<img src="${design.dataURL}" style="width: 100%; height: 100%; object-fit: contain;">`;
+            
+            switchTab('customize');
+            showToast(`Using custom design: ${design.name}`);
+          }
+        });
+      });
+    }
+
+    function setupChatListeners() {
+      const chatInput = document.getElementById('chat-input');
+      const sendBtn = document.getElementById('send-chat-btn');
+      
+      if (chatInput && sendBtn) {
+        sendBtn.addEventListener('click', sendChatMessage);
+        chatInput.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') {
+            sendChatMessage();
+          }
+        });
+      }
+      
+      // Quick help buttons
+      document.querySelectorAll('.quick-help-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const message = btn.dataset.message;
+          document.getElementById('chat-input').value = message;
+          sendChatMessage();
+        });
+      });
+    }
+
+    function sendChatMessage() {
+      const input = document.getElementById('chat-input');
+      const message = input.value.trim();
+      
+      if (!message) return;
+      
+      // Add user message
+      addChatMessage(message, 'user');
+      input.value = '';
+      
+      // Simulate support response
+      setTimeout(() => {
+        const responses = {
+          'How do I upload my fabric image?': 'To upload your fabric image, go to the Customize tab and click on the "Upload Your Fabric Image" area. You can drag & drop or click to select JPG/PNG files up to 5MB. This AI-powered preview shows exactly how embroidery will look on your kurti, saree, or lehenga fabric! 📸',
+          'What file formats do you accept for custom designs?': 'For custom designs, we accept PNG, JPG, and SVG files. For traditional embroidery like chikankari, zardozi, or mirror work, use high-contrast images with bold lines. Avoid very detailed photos - simple traditional motifs work best! 🎨',
+          'How long does embroidery take?': 'Processing time varies by technique: Chikankari/Simple work (1-5 items): 3-5 days, Zardozi/Mirror work (6+ items): 5-7 days, Complex traditional designs: 7-10 days. Rush orders available for special occasions! ⏰',
+          'What are your shipping options?': 'We offer: Standard (5-7 days) - Free over ₹2000, Express (2-3 days) - ₹299, Same-day (select cities) - ₹599. Pan-India delivery with tracking. Special packaging for delicate embroidery! 🚚',
+          'Can I modify my order after placing it?': 'Orders can be modified within 2 hours of placement for design changes. After cutting begins, modifications are limited. Contact us immediately for urgent changes - our artisans are flexible when possible! ✏️',
+          'What\'s the maximum design size?': 'Maximum size varies by garment: Kurti sleeves: 15cm, Saree borders: 20cm width, Lehenga panels: 25cm. Traditional motifs work best in smaller sizes (5-10cm) for authentic look. Custom sizing available! 📏'
+        };
+        
+        const response = responses[message] || `Thanks for your message! Our team will help you with: "${message}". For immediate assistance, please call our support line or check our FAQ section. Is there anything specific about embroidery I can help clarify? 😊`;
+        
+        addChatMessage(response, 'support');
+      }, 1000 + Math.random() * 2000);
+    }
+
+    function addChatMessage(message, sender) {
+      const chatMessages = document.getElementById('chat-messages');
+      const messageDiv = document.createElement('div');
+      
+      const isUser = sender === 'user';
+      const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      
+      messageDiv.style.cssText = `
+        background: ${isUser ? '#667eea' : '#e2e8f0'};
+        color: ${isUser ? 'white' : '#2d3748'};
+        padding: 0.75rem;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        max-width: 80%;
+        margin-left: ${isUser ? 'auto' : '0'};
+        margin-right: ${isUser ? '0' : 'auto'};
+      `;
+      
+      messageDiv.innerHTML = `
+        <div style="font-size: 0.8rem; opacity: 0.8; margin-bottom: 0.25rem;">
+          ${isUser ? 'You' : 'Support Team'} • ${time}
+        </div>
+        <div>${message}</div>
+      `;
+      
+      chatMessages.appendChild(messageDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function setupPaymentModal() {
+      const modal = document.getElementById('payment-modal');
+      const closeBtn = document.getElementById('close-payment-modal');
+      const form = document.getElementById('payment-form');
+      
+      closeBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+      });
+      
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.style.display = 'none';
+        }
+      });
+      
+      form.addEventListener('submit', processPayment);
+      
+      // Format card number input
+      document.getElementById('card-number').addEventListener('input', (e) => {
+        let value = e.target.value.replace(/\s/g, '').replace(/[^0-9]/gi, '');
+        let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+        e.target.value = formattedValue;
+      });
+      
+      // Format expiry date
+      document.getElementById('expiry-date').addEventListener('input', (e) => {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length >= 2) {
+          value = value.substring(0, 2) + '/' + value.substring(2, 4);
+        }
+        e.target.value = value;
+      });
+      
+      // CVV numbers only
+      document.getElementById('cvv').addEventListener('input', (e) => {
+        e.target.value = e.target.value.replace(/[^0-9]/g, '');
+      });
+    }
+
+    function showPaymentModal(orderSummary, total) {
+      const modal = document.getElementById('payment-modal');
+      const summaryDiv = document.getElementById('payment-order-summary');
+      const totalSpan = document.getElementById('payment-total');
+      
+      summaryDiv.innerHTML = orderSummary;
+      totalSpan.textContent = total;
+      
+      modal.style.display = 'flex';
+    }
+
+    function processPayment(e) {
+      e.preventDefault();
+      
+      const cardNumber = document.getElementById('card-number').value.replace(/\s/g, '');
+      const expiryDate = document.getElementById('expiry-date').value;
+      const cvv = document.getElementById('cvv').value;
+      const cardholderName = document.getElementById('cardholder-name').value.trim();
+      const billingAddress = document.getElementById('billing-address').value.trim();
+      
+      if (!cardNumber || !expiryDate || !cvv || !cardholderName || !billingAddress) {
+        showToast('Please fill in all payment fields', false);
+        return;
+      }
+      
+      if (cardNumber.length !== 16) {
+        showToast('Please enter a valid 16-digit card number', false);
+        return;
+      }
+      
+      const btn = document.getElementById('process-payment-btn');
+      btn.disabled = true;
+      btn.textContent = 'Processing Payment...';
+      
+      // Simulate payment processing
+      setTimeout(() => {
+        document.getElementById('payment-modal').style.display = 'none';
+        showToast('Payment processed successfully! 💳✨');
+        
+        // Reset form
+        document.getElementById('payment-form').reset();
+        btn.disabled = false;
+        btn.textContent = '🔒 Process Secure Payment';
+        
+        // Complete the checkout
+        completeCheckoutAfterPayment();
+      }, 2000 + Math.random() * 1000);
+    }
+
+    async function completeCheckoutAfterPayment() {
+      // This function completes the order after successful payment
+      const customerName = document.getElementById('checkout-name').value.trim();
+      const customerEmail = document.getElementById('checkout-email').value.trim();
+      
+      if (cart.length === 0) return;
+      
+      const orderId = 'ORD-' + Date.now();
+      
+      // Create order records for each cart item
+      for (const item of cart) {
+        const orderData = {
+          id: 'order-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9),
+          type: 'order',
+          order_id: orderId,
+          design_id: item.design_id,
+          design_name: item.design_name,
+          fabric_color: item.fabric_color,
+          thread_color: item.thread_color,
+          size: item.size,
+          quantity: item.quantity,
+          status: 'processing',
+          customer_name: customerName,
+          customer_email: customerEmail,
+          timestamp: new Date().toISOString()
+        };
+
+        if (window.dataSdk) {
+          await window.dataSdk.create(orderData);
+        }
+      }
+
+      // Clear cart
+      cart = [];
+      updateCartDisplay();
+      document.getElementById('checkout-name').value = '';
+      document.getElementById('checkout-email').value = '';
+      
+      switchTab('orders');
+    }
+
+    async function placeOrder() {
+      if (currentRecordCount >= 999) {
+        showToast('Maximum limit of 999 records reached. Please contact support.', false);
+        return;
+      }
+
+      const designId = document.getElementById('design-select').value;
+      const design = designs.find(d => d.id === designId);
+      const fabricColor = document.getElementById('fabric-color').value;
+      const threadColor = document.getElementById('thread-color').value;
+      const size = document.getElementById('size-select').value;
+      const quantity = parseInt(document.getElementById('quantity').value);
+      const customerName = document.getElementById('customer-name').value.trim();
+      const customerEmail = document.getElementById('customer-email').value.trim();
+
+      if (!customerName || !customerEmail) {
+        showToast('Please enter your name and email', false);
+        return;
+      }
+
+      const btn = document.getElementById('place-order-btn');
+      btn.disabled = true;
+      btn.textContent = 'Placing Order...';
+
+      const orderId = 'ORD-' + Date.now();
+      const orderData = {
+        id: 'order-' + Date.now(),
+        type: 'order',
+        order_id: orderId,
+        design_id: designId,
+        design_name: design.name,
+        fabric_color: fabricColor,
+        thread_color: threadColor,
+        size: size,
+        quantity: quantity,
+        status: 'pending',
+        customer_name: customerName,
+        customer_email: customerEmail,
+        timestamp: new Date().toISOString()
+      };
+
+      if (window.dataSdk) {
+        const result = await window.dataSdk.create(orderData);
+        if (result.isOk) {
+          showToast('Order placed successfully! 🎉');
+          switchTab('orders');
+        } else {
+          showToast('Failed to place order. Please try again.', false);
+        }
+      }
+
+      btn.disabled = false;
+      btn.textContent = window.elementSdk?.config?.order_button || defaultConfig.order_button;
+    }
+
+    async function sendMessage() {
+      if (currentRecordCount >= 999) {
+        showToast('Maximum limit of 999 records reached. Please contact support.', false);
+        return;
+      }
+
+      const name = document.getElementById('message-name').value.trim();
+      const email = document.getElementById('message-email').value.trim();
+      const message = document.getElementById('message-text').value.trim();
+
+      if (!name || !email || !message) {
+        showToast('Please fill in all fields', false);
+        return;
+      }
+
+      const btn = document.getElementById('send-message-btn');
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+
+      const messageData = {
+        id: 'msg-' + Date.now(),
+        type: 'message',
+        customer_name: name,
+        customer_email: email,
+        message: message,
+        timestamp: new Date().toISOString()
+      };
+
+      if (window.dataSdk) {
+        const result = await window.dataSdk.create(messageData);
+        if (result.isOk) {
+          showToast('Message sent successfully! 💬');
+          document.getElementById('message-name').value = '';
+          document.getElementById('message-email').value = '';
+          document.getElementById('message-text').value = '';
+        } else {
+          showToast('Failed to send message. Please try again.', false);
+        }
+      }
+
+      btn.disabled = false;
+      btn.textContent = 'Send Message';
+    }
+
+    function renderOrders(data) {
+      const orders = data.filter(record => record.type === 'order');
+      const orderList = document.getElementById('order-list');
+
+      if (orders.length === 0) {
+        orderList.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">📦</div>
+            <p>No orders yet. Start by customizing a design!</p>
+          </div>
+        `;
+        return;
+      }
+
+      orderList.innerHTML = orders.map(order => {
+        const date = new Date(order.timestamp);
+        return `
+          <div class="order-card">
+            <div class="order-header">
+              <span class="order-id">${order.order_id}</span>
+              <span class="status-badge status-${order.status}">${order.status.toUpperCase()}</span>
+            </div>
+            <div class="order-details">
+              <div><strong>Design:</strong> ${order.design_name}</div>
+              <div><strong>Size:</strong> ${order.size}</div>
+              <div><strong>Quantity:</strong> ${order.quantity}</div>
+              <div><strong>Date:</strong> ${date.toLocaleDateString()}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderMessages(data) {
+      const messages = data.filter(record => record.type === 'message');
+      const messageList = document.getElementById('message-list');
+
+      if (messages.length === 0) {
+        messageList.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">💬</div>
+            <p>No messages yet. Send us a message above!</p>
+          </div>
+        `;
+        return;
+      }
+
+      messageList.innerHTML = messages.map(msg => {
+        const date = new Date(msg.timestamp);
+        return `
+          <div class="message-card">
+            <div class="message-header">
+              <span class="message-sender">${msg.customer_name}</span>
+              <span>${date.toLocaleDateString()} ${date.toLocaleTimeString()}</span>
+            </div>
+            <div class="message-body">${msg.message}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function handleFabricUpload(e) {
+      const file = e.target.files[0];
+      if (file) {
+        handleFabricFile(file);
+      }
+    }
+
+    function handleFabricFile(file) {
+      if (file.size > 5 * 1024 * 1024) {
+        showToast('File size must be less than 5MB', false);
+        return;
+      }
+
+      if (!file.type.startsWith('image/')) {
+        showToast('Please upload an image file', false);
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        uploadedFabricImage = e.target.result;
+        const fabricPreview = document.getElementById('fabric-preview');
+        fabricPreview.style.backgroundImage = `url(${uploadedFabricImage})`;
+        fabricPreview.style.backgroundColor = 'transparent';
+        document.getElementById('reset-fabric-btn').style.display = 'block';
+        showToast('Fabric image uploaded! 📸');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function resetFabric() {
+      uploadedFabricImage = null;
+      const fabricPreview = document.getElementById('fabric-preview');
+      fabricPreview.style.backgroundImage = 'none';
+      fabricPreview.style.backgroundColor = document.getElementById('fabric-color').value;
+      document.getElementById('reset-fabric-btn').style.display = 'none';
+      document.getElementById('fabric-file').value = '';
+      showToast('Reset to default fabric');
+    }
+
+    function updateDesignPosition() {
+      const x = document.getElementById('position-x').value;
+      const y = document.getElementById('position-y').value;
+      const overlay = document.getElementById('design-overlay');
+      overlay.style.left = `${x}%`;
+      overlay.style.top = `${y}%`;
+    }
+
+    function addToCart() {
+      const designId = document.getElementById('design-select').value;
+      const design = designs.find(d => d.id === designId);
+      const fabricColor = document.getElementById('fabric-color').value;
+      const threadColor = document.getElementById('thread-color').value;
+      const size = document.getElementById('size-select').value;
+      const quantity = parseInt(document.getElementById('quantity').value);
+      const positionX = document.getElementById('position-x').value;
+      const positionY = document.getElementById('position-y').value;
+
+      const cartItem = {
+        id: 'cart-' + Date.now(),
+        design_id: designId,
+        design_name: design.name,
+        design_icon: design.icon,
+        fabric_color: fabricColor,
+        fabric_image: uploadedFabricImage,
+        thread_color: threadColor,
+        size: size,
+        quantity: quantity,
+        position_x: positionX,
+        position_y: positionY,
+        timestamp: new Date().toISOString()
+      };
+
+      cart.push(cartItem);
+      updateCartDisplay();
+      showToast(`${design.name} added to cart! 🛒`);
+    }
+
+    function updateCartDisplay() {
+      const cartCount = document.getElementById('cart-count');
+      const cartTotal = document.getElementById('cart-total');
+      const cartItems = document.getElementById('cart-items');
+      const cartSummary = document.getElementById('cart-summary');
+      const cartList = document.getElementById('cart-list');
+      const cartCheckout = document.getElementById('cart-checkout');
+
+      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+      cartCount.textContent = totalItems;
+      cartTotal.textContent = totalItems;
+
+      if (cart.length > 0) {
+        cartSummary.style.display = 'block';
+        cartCheckout.style.display = 'block';
+        
+        // Update cart summary in customize tab
+        cartItems.innerHTML = cart.slice(-3).map(item => `
+          <div style="font-size: 0.85rem; color: #4a5568; margin-bottom: 0.25rem;">
+            ${item.design_icon} ${item.design_name} (${item.quantity}x)
+          </div>
+        `).join('');
+
+        // Update full cart list
+        cartList.innerHTML = cart.map(item => `
+          <div class="order-card">
+            <div class="order-header">
+              <span class="order-id">${item.design_icon} ${item.design_name}</span>
+              <button class="btn btn-secondary" onclick="removeFromCart('${item.id}')" style="padding: 0.25rem 0.75rem; font-size: 0.8rem;">
+                🗑️ Remove
+              </button>
+            </div>
+            <div class="order-details">
+              <div><strong>Size:</strong> ${item.size}</div>
+              <div><strong>Quantity:</strong> ${item.quantity}</div>
+              <div><strong>Thread Color:</strong> <span style="color: ${item.thread_color};">●</span> ${item.thread_color}</div>
+              <div><strong>Position:</strong> ${item.position_x}%, ${item.position_y}%</div>
+            </div>
+          </div>
+        `).join('');
+      } else {
+        cartSummary.style.display = 'none';
+        cartCheckout.style.display = 'none';
+        cartList.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">🛒</div>
+            <p>Your cart is empty. Start customizing designs!</p>
+          </div>
+        `;
+      }
+    }
+
+    function removeFromCart(itemId) {
+      cart = cart.filter(item => item.id !== itemId);
+      updateCartDisplay();
+      showToast('Item removed from cart');
+    }
+
+    async function checkoutCart() {
+      if (cart.length === 0) {
+        showToast('Your cart is empty', false);
+        return;
+      }
+
+      if (currentRecordCount + cart.length > 999) {
+        showToast('Cannot complete order - would exceed storage limit', false);
+        return;
+      }
+
+      const customerName = document.getElementById('checkout-name').value.trim();
+      const customerEmail = document.getElementById('checkout-email').value.trim();
+
+      if (!customerName || !customerEmail) {
+        showToast('Please enter your name and email', false);
+        return;
+      }
+
+      // Calculate pricing
+      const pricing = {
+        small: 15,
+        medium: 25,
+        large: 35,
+        xlarge: 45
+      };
+
+      let orderSummary = '';
+      let total = 0;
+
+      cart.forEach(item => {
+        const itemPrice = pricing[item.size] * item.quantity;
+        total += itemPrice;
+        orderSummary += `
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span>${item.design_icon} ${item.design_name} (${item.size}, ${item.quantity}x)</span>
+            <span>$${itemPrice.toFixed(2)}</span>
+          </div>
+        `;
+      });
+
+      // Show payment modal
+      showPaymentModal(orderSummary, `$${total.toFixed(2)}`);
+    }
+
+    function showToast(message, success = true) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.style.background = success ? '#48bb78' : '#f56565';
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    function loadSavedDesigns() {
+      const saved = localStorage.getItem('customDesigns');
+      if (saved) {
+        customDesigns = JSON.parse(saved);
+        renderCustomDesigns();
+      }
+    }
+
+    // Make removeFromCart globally accessible
+    window.removeFromCart = removeFromCart;
+
+    document.addEventListener('DOMContentLoaded', initializeApp);
+  </script>
+  </div>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99b89fea959031be',t:'MTc2MjY0MjE3OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
