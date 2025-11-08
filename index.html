@@ -1,0 +1,1895 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Global Embroidery Studio</title>
+  <script src="/_sdk/data_sdk.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #2d3748;
+      min-height: 100%;
+    }
+
+    html {
+      height: 100%;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    header {
+      text-align: center;
+      padding: 3rem 1rem;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      margin-bottom: 2rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin: 0 0 0.5rem 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .tagline {
+      font-size: 1.25rem;
+      color: #718096;
+      margin-bottom: 2rem;
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+
+    .tab-btn {
+      padding: 0.75rem 2rem;
+      border: none;
+      background: rgba(255, 255, 255, 0.9);
+      color: #667eea;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .tab-btn:hover {
+      background: #667eea;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .tab-btn.active {
+      background: #667eea;
+      color: white;
+    }
+
+    .tab-content {
+      display: none;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .design-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .design-card {
+      background: white;
+      border-radius: 15px;
+      padding: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .design-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+      border-color: #667eea;
+    }
+
+    .design-icon {
+      font-size: 4rem;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .design-name {
+      font-weight: 600;
+      font-size: 1.1rem;
+      text-align: center;
+      color: #2d3748;
+      margin-bottom: 0.5rem;
+    }
+
+    .design-category {
+      text-align: center;
+      color: #718096;
+      font-size: 0.9rem;
+    }
+
+    .customizer {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      .customizer {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .preview-area {
+      background: #f7fafc;
+      border-radius: 15px;
+      padding: 2rem;
+      min-height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      border: 2px dashed #cbd5e0;
+    }
+
+    .preview-content {
+      text-align: center;
+      position: relative;
+    }
+
+    .fabric-preview {
+      width: 100%;
+      max-width: 300px;
+      height: 300px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5rem;
+      position: relative;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .design-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 4rem;
+      opacity: 0.9;
+      filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
+    }
+
+    .controls-area {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    label {
+      font-weight: 600;
+      color: #2d3748;
+      font-size: 0.95rem;
+    }
+
+    input, select, textarea {
+      padding: 0.75rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .color-picker-group {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    input[type="color"] {
+      width: 60px;
+      height: 60px;
+      border-radius: 10px;
+      cursor: pointer;
+      border: 2px solid #e2e8f0;
+    }
+
+    .btn {
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-primary {
+      background: #667eea;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-primary:disabled {
+      background: #cbd5e0;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-secondary {
+      background: #e2e8f0;
+      color: #2d3748;
+    }
+
+    .btn-secondary:hover {
+      background: #cbd5e0;
+    }
+
+    .order-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .order-card {
+      background: white;
+      border-radius: 15px;
+      padding: 1.5rem;
+      border-left: 4px solid #667eea;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .order-id {
+      font-weight: 700;
+      color: #667eea;
+      font-size: 1.1rem;
+    }
+
+    .status-badge {
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .status-pending {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status-processing {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .status-completed {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .order-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      color: #4a5568;
+      font-size: 0.95rem;
+    }
+
+    .message-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 1.5rem;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .message-card {
+      background: white;
+      border-radius: 15px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .message-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+      font-size: 0.9rem;
+      color: #718096;
+    }
+
+    .message-sender {
+      font-weight: 600;
+      color: #667eea;
+    }
+
+    .message-body {
+      color: #2d3748;
+      line-height: 1.6;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: #718096;
+    }
+
+    .empty-state-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: #48bb78;
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      display: none;
+      z-index: 1000;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .toast.show {
+      display: block;
+    }
+
+    .loading {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .ai-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-left: 0.5rem;
+    }
+
+    h2 {
+      font-size: 1.75rem;
+      margin-bottom: 1rem;
+      color: #2d3748;
+    }
+
+    h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+      color: #2d3748;
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <div class="container">
+   <header>
+    <h1 id="platform-title">Global Embroidery Studio</h1>
+    <p class="tagline" id="tagline">Discover &amp; Customize Embroidery Designs</p>
+    <div class="nav-tabs"><button class="tab-btn active" data-tab="discover">🌍 Discover Designs</button> <button class="tab-btn" data-tab="customize">✨ Customize</button> <button class="tab-btn" data-tab="orders">📦 My Orders</button> <button class="tab-btn" data-tab="contact">💬 Contact Team</button>
+    </div>
+   </header>
+   <div id="discover" class="tab-content active">
+    <h2>Browse Global Embroidery Designs</h2>
+    <p style="color: #718096; margin-bottom: 1rem;">Select a design to start customizing</p>
+    <div class="design-grid" id="design-grid"></div>
+   </div>
+   <div id="customize" class="tab-content">
+    <h2>Customize Your Design <span class="ai-badge">AI Preview</span></h2>
+    <div class="customizer">
+     <div class="preview-area">
+      <div class="preview-content">
+       <div class="fabric-preview" id="fabric-preview">
+        <div class="design-overlay" id="design-overlay">
+         🌸
+        </div>
+       </div>
+       <p style="margin-top: 1rem; color: #718096; font-size: 0.9rem;">AI-assisted preview on your fabric</p>
+      </div>
+     </div>
+     <div class="controls-area">
+      <div class="control-group"><label for="design-select">Select Design</label> <select id="design-select"></select>
+      </div>
+      <div class="control-group"><label>Fabric Color</label>
+       <div class="color-picker-group"><input type="color" id="fabric-color" value="#ffffff"> <span id="fabric-color-label">#ffffff</span>
+       </div>
+      </div>
+      <div class="control-group"><label>Thread Color</label>
+       <div class="color-picker-group"><input type="color" id="thread-color" value="#ff6b9d"> <span id="thread-color-label">#ff6b9d</span>
+       </div>
+      </div>
+      <div class="control-group"><label for="size-select">Size</label> <select id="size-select"> <option value="small">Small (5cm x 5cm)</option> <option value="medium" selected>Medium (10cm x 10cm)</option> <option value="large">Large (15cm x 15cm)</option> <option value="xlarge">Extra Large (20cm x 20cm)</option> </select>
+      </div>
+      <div class="control-group"><label for="quantity">Quantity</label> <input type="number" id="quantity" min="1" value="1">
+      </div>
+      <div class="control-group"><label for="customer-name">Your Name</label> <input type="text" id="customer-name" placeholder="Enter your name">
+      </div>
+      <div class="control-group"><label for="customer-email">Email</label> <input type="email" id="customer-email" placeholder="your@email.com">
+      </div><button class="btn btn-primary" id="place-order-btn"> <span id="order-button-text">Place Order</span> </button>
+     </div>
+    </div>
+   </div>
+   <div id="orders" class="tab-content">
+    <h2>Track Your Orders</h2>
+    <p style="color: #718096; margin-bottom: 1rem;">Monitor the status of your embroidery orders</p>
+    <div class="order-list" id="order-list"></div>
+   </div>
+   <div id="contact" class="tab-content">
+    <h2 id="contact-heading">Questions? Let's Talk</h2>
+    <p style="color: #718096; margin-bottom: 1.5rem;">Send a message to our embroidery team</p>
+    <div class="control-group"><label for="message-name">Your Name</label> <input type="text" id="message-name" placeholder="Enter your name">
+    </div>
+    <div class="control-group" style="margin-top: 1rem;"><label for="message-email">Email</label> <input type="email" id="message-email" placeholder="your@email.com">
+    </div>
+    <div class="control-group" style="margin-top: 1rem;"><label for="message-text">Message</label> <textarea id="message-text" rows="5" placeholder="How can we help you?"></textarea>
+    </div><button class="btn btn-primary" id="send-message-btn" style="margin-top: 1rem;">Send Message</button>
+    <h3 style="margin-top: 2rem;">Your Messages</h3>
+    <div class="message-list" id="message-list"></div>
+   </div>
+  </div>
+  <div class="toast" id="toast"></div>
+  <script>
+    const designs = [
+      { id: 'd1', name: 'Cherry Blossom', icon: '🌸', category: 'Floral' },
+      { id: 'd2', name: 'Dragon', icon: '🐉', category: 'Asian' },
+      { id: 'd3', name: 'Butterfly', icon: '🦋', category: 'Nature' },
+      { id: 'd4', name: 'Rose Garden', icon: '🌹', category: 'Floral' },
+      { id: 'd5', name: 'Peacock', icon: '🦚', category: 'Birds' },
+      { id: 'd6', name: 'Mandala', icon: '🕉️', category: 'Geometric' },
+      { id: 'd7', name: 'Lotus', icon: '🪷', category: 'Floral' },
+      { id: 'd8', name: 'Phoenix', icon: '🔥', category: 'Mythical' },
+      { id: 'd9', name: 'Sunflower', icon: '🌻', category: 'Floral' },
+      { id: 'd10', name: 'Hummingbird', icon: '🐦', category: 'Birds' },
+      { id: 'd11', name: 'Celtic Knot', icon: '☘️', category: 'Geometric' },
+      { id: 'd12', name: 'Orchid', icon: '🌺', category: 'Floral' }
+    ];
+
+    const defaultConfig = {
+      platform_title: 'Global Embroidery Studio',
+      tagline: 'Discover & Customize Embroidery Designs',
+      cta_button: 'Start Designing',
+      order_button: 'Place Order',
+      contact_heading: "Questions? Let's Talk",
+      background_color: '#667eea',
+      surface_color: '#ffffff',
+      text_color: '#2d3748',
+      primary_action_color: '#667eea',
+      secondary_action_color: '#e2e8f0',
+      font_family: 'Inter',
+      font_size: 16
+    };
+
+    let currentRecordCount = 0;
+    let allRecords = [];
+
+    const dataHandler = {
+      onDataChanged(data) {
+        allRecords = data;
+        currentRecordCount = data.length;
+        renderOrders(data);
+        renderMessages(data);
+      }
+    };
+
+    async function initializeApp() {
+      if (window.dataSdk) {
+        const initResult = await window.dataSdk.init(dataHandler);
+        if (!initResult.isOk) {
+          console.error('Failed to initialize data SDK');
+        }
+      }
+
+      if (window.elementSdk) {
+        await window.elementSdk.init({
+          defaultConfig,
+          onConfigChange: async (config) => {
+            const customFont = config.font_family || defaultConfig.font_family;
+            const baseSize = config.font_size || defaultConfig.font_size;
+            const baseFontStack = '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+
+            document.body.style.fontFamily = `${customFont}, ${baseFontStack}`;
+            document.body.style.fontSize = `${baseSize}px`;
+            document.body.style.background = `linear-gradient(135deg, ${config.background_color || defaultConfig.background_color} 0%, ${config.primary_action_color || defaultConfig.primary_action_color} 100%)`;
+            document.body.style.color = config.text_color || defaultConfig.text_color;
+
+            const header = document.querySelector('header');
+            header.style.background = `rgba(255, 255, 255, 0.95)`;
+
+            const h1 = document.querySelector('h1');
+            h1.style.fontSize = `${baseSize * 2}px`;
+            h1.style.background = `linear-gradient(135deg, ${config.background_color || defaultConfig.background_color} 0%, ${config.primary_action_color || defaultConfig.primary_action_color} 100%)`;
+            h1.style.webkitBackgroundClip = 'text';
+            h1.style.webkitTextFillColor = 'transparent';
+            h1.style.backgroundClip = 'text';
+
+            document.querySelectorAll('h2').forEach(el => {
+              el.style.fontSize = `${baseSize * 1.75}px`;
+              el.style.color = config.text_color || defaultConfig.text_color;
+            });
+
+            document.querySelectorAll('h3').forEach(el => {
+              el.style.fontSize = `${baseSize * 1.25}px`;
+              el.style.color = config.text_color || defaultConfig.text_color;
+            });
+
+            document.querySelector('.tagline').style.fontSize = `${baseSize * 1.25}px`;
+
+            document.querySelectorAll('.btn-primary').forEach(btn => {
+              btn.style.background = config.primary_action_color || defaultConfig.primary_action_color;
+            });
+
+            document.querySelectorAll('.btn-secondary').forEach(btn => {
+              btn.style.background = config.secondary_action_color || defaultConfig.secondary_action_color;
+            });
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+              btn.style.color = config.primary_action_color || defaultConfig.primary_action_color;
+            });
+
+            document.querySelectorAll('.tab-btn.active').forEach(btn => {
+              btn.style.background = config.primary_action_color || defaultConfig.primary_action_color;
+              btn.style.color = config.surface_color || defaultConfig.surface_color;
+            });
+
+            document.getElementById('platform-title').textContent = config.platform_title || defaultConfig.platform_title;
+            document.getElementById('tagline').textContent = config.tagline || defaultConfig.tagline;
+            document.getElementById('order-button-text').textContent = config.order_button || defaultConfig.order_button;
+            document.getElementById('contact-heading').textContent = config.contact_heading || defaultConfig.contact_heading;
+          },
+          mapToCapabilities: (config) => ({
+            recolorables: [
+              {
+                get: () => config.background_color || defaultConfig.background_color,
+                set: (value) => {
+                  if (window.elementSdk) {
+                    window.elementSdk.config.background_color = value;
+                    window.elementSdk.setConfig({ background_color: value });
+                  }
+                }
+              },
+              {
+                get: () => config.surface_color || defaultConfig.surface_color,
+                set: (value) => {
+                  if (window.elementSdk) {
+                    window.elementSdk.config.surface_color = value;
+                    window.elementSdk.setConfig({ surface_color: value });
+                  }
+                }
+              },
+              {
+                get: () => config.text_color || defaultConfig.text_color,
+                set: (value) => {
+                  if (window.elementSdk) {
+                    window.elementSdk.config.text_color = value;
+                    window.elementSdk.setConfig({ text_color: value });
+                  }
+                }
+              },
+              {
+                get: () => config.primary_action_color || defaultConfig.primary_action_color,
+                set: (value) => {
+                  if (window.elementSdk) {
+                    window.elementSdk.config.primary_action_color = value;
+                    window.elementSdk.setConfig({ primary_action_color: value });
+                  }
+                }
+              },
+              {
+                get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
+                set: (value) => {
+                  if (window.elementSdk) {
+                    window.elementSdk.config.secondary_action_color = value;
+                    window.elementSdk.setConfig({ secondary_action_color: value });
+                  }
+                }
+              }
+            ],
+            borderables: [],
+            fontEditable: {
+              get: () => config.font_family || defaultConfig.font_family,
+              set: (value) => {
+                if (window.elementSdk) {
+                  window.elementSdk.config.font_family = value;
+                  window.elementSdk.setConfig({ font_family: value });
+                }
+              }
+            },
+            fontSizeable: {
+              get: () => config.font_size || defaultConfig.font_size,
+              set: (value) => {
+                if (window.elementSdk) {
+                  window.elementSdk.config.font_size = value;
+                  window.elementSdk.setConfig({ font_size: value });
+                }
+              }
+            }
+          }),
+          mapToEditPanelValues: (config) => new Map([
+            ['platform_title', config.platform_title || defaultConfig.platform_title],
+            ['tagline', config.tagline || defaultConfig.tagline],
+            ['cta_button', config.cta_button || defaultConfig.cta_button],
+            ['order_button', config.order_button || defaultConfig.order_button],
+            ['contact_heading', config.contact_heading || defaultConfig.contact_heading]
+          ])
+        });
+      }
+
+      renderDesigns();
+      populateDesignSelect();
+      setupEventListeners();
+    }
+
+    function renderDesigns() {
+      const grid = document.getElementById('design-grid');
+      grid.innerHTML = designs.map(design => `
+        <div class="design-card" data-design-id="${design.id}">
+          <div class="design-icon">${design.icon}</div>
+          <div class="design-name">${design.name}</div>
+          <div class="design-category">${design.category}</div>
+        </div>
+      `).join('');
+
+      document.querySelectorAll('.design-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const designId = card.dataset.designId;
+          const design = designs.find(d => d.id === designId);
+          document.getElementById('design-select').value = designId;
+          document.getElementById('design-overlay').textContent = design.icon;
+          switchTab('customize');
+        });
+      });
+    }
+
+    function populateDesignSelect() {
+      const select = document.getElementById('design-select');
+      select.innerHTML = designs.map(design => 
+        `<option value="${design.id}">${design.icon} ${design.name}</option>`
+      ).join('');
+    }
+
+    function setupEventListeners() {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          switchTab(btn.dataset.tab);
+        });
+      });
+
+      document.getElementById('design-select').addEventListener('change', (e) => {
+        const design = designs.find(d => d.id === e.target.value);
+        document.getElementById('design-overlay').textContent = design.icon;
+      });
+
+      document.getElementById('fabric-color').addEventListener('input', (e) => {
+        document.getElementById('fabric-preview').style.background = e.target.value;
+        document.getElementById('fabric-color-label').textContent = e.target.value;
+      });
+
+      document.getElementById('thread-color').addEventListener('input', (e) => {
+        document.getElementById('design-overlay').style.color = e.target.value;
+        document.getElementById('thread-color-label').textContent = e.target.value;
+      });
+
+      document.getElementById('place-order-btn').addEventListener('click', placeOrder);
+      document.getElementById('send-message-btn').addEventListener('click', sendMessage);
+    }
+
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.tab === tabName) {
+          btn.classList.add('active');
+        }
+      });
+
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      document.getElementById(tabName).classList.add('active');
+    }
+
+    async function placeOrder() {
+      if (currentRecordCount >= 999) {
+        showToast('Maximum limit of 999 records reached. Please contact support.', false);
+        return;
+      }
+
+      const designId = document.getElementById('design-select').value;
+      const design = designs.find(d => d.id === designId);
+      const fabricColor = document.getElementById('fabric-color').value;
+      const threadColor = document.getElementById('thread-color').value;
+      const size = document.getElementById('size-select').value;
+      const quantity = parseInt(document.getElementById('quantity').value);
+      const customerName = document.getElementById('customer-name').value.trim();
+      const customerEmail = document.getElementById('customer-email').value.trim();
+
+      if (!customerName || !customerEmail) {
+        showToast('Please enter your name and email', false);
+        return;
+      }
+
+      const btn = document.getElementById('place-order-btn');
+      btn.disabled = true;
+      btn.textContent = 'Placing Order...';
+
+      const orderId = 'ORD-' + Date.now();
+      const orderData = {
+        id: 'order-' + Date.now(),
+        type: 'order',
+        order_id: orderId,
+        design_id: designId,
+        design_name: design.name,
+        fabric_color: fabricColor,
+        thread_color: threadColor,
+        size: size,
+        quantity: quantity,
+        status: 'pending',
+        customer_name: customerName,
+        customer_email: customerEmail,
+        timestamp: new Date().toISOString()
+      };
+
+      if (window.dataSdk) {
+        const result = await window.dataSdk.create(orderData);
+        if (result.isOk) {
+          showToast('Order placed successfully! 🎉');
+          switchTab('orders');
+        } else {
+          showToast('Failed to place order. Please try again.', false);
+        }
+      }
+
+      btn.disabled = false;
+      btn.textContent = window.elementSdk?.config?.order_button || defaultConfig.order_button;
+    }
+
+    async function sendMessage() {
+      if (currentRecordCount >= 999) {
+        showToast('Maximum limit of 999 records reached. Please contact support.', false);
+        return;
+      }
+
+      const name = document.getElementById('message-name').value.trim();
+      const email = document.getElementById('message-email').value.trim();
+      const message = document.getElementById('message-text').value.trim();
+
+      if (!name || !email || !message) {
+        showToast('Please fill in all fields', false);
+        return;
+      }
+
+      const btn = document.getElementById('send-message-btn');
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+
+      const messageData = {
+        id: 'msg-' + Date.now(),
+        type: 'message',
+        customer_name: name,
+        customer_email: email,
+        message: message,
+        timestamp: new Date().toISOString()
+      };
+
+      if (window.dataSdk) {
+        const result = await window.dataSdk.create(messageData);
+        if (result.isOk) {
+          showToast('Message sent successfully! 💬');
+          document.getElementById('message-name').value = '';
+          document.getElementById('message-email').value = '';
+          document.getElementById('message-text').value = '';
+        } else {
+          showToast('Failed to send message. Please try again.', false);
+        }
+      }
+
+      btn.disabled = false;
+      btn.textContent = 'Send Message';
+    }
+
+    function renderOrders(data) {
+      const orders = data.filter(record => record.type === 'order');
+      const orderList = document.getElementById('order-list');
+
+      if (orders.length === 0) {
+        orderList.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">📦</div>
+            <p>No orders yet. Start by customizing a design!</p>
+          </div>
+        `;
+        return;
+      }
+
+      orderList.innerHTML = orders.map(order => {
+        const date = new Date(order.timestamp);
+        return `
+          <div class="order-card">
+            <div class="order-header">
+              <span class="order-id">${order.order_id}</span>
+              <span class="status-badge status-${order.status}">${order.status.toUpperCase()}</span>
+            </div>
+            <div class="order-details">
+              <div><strong>Design:</strong> ${order.design_name}</div>
+              <div><strong>Size:</strong> ${order.size}</div>
+              <div><strong>Quantity:</strong> ${order.quantity}</div>
+              <div><strong>Date:</strong> ${date.toLocaleDateString()}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderMessages(data) {
+      const messages = data.filter(record => record.type === 'message');
+      const messageList = document.getElementById('message-list');
+
+      if (messages.length === 0) {
+        messageList.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">💬</div>
+            <p>No messages yet. Send us a message above!</p>
+          </div>
+        `;
+        return;
+      }
+
+      messageList.innerHTML = messages.map(msg => {
+        const date = new Date(msg.timestamp);
+        return `
+          <div class="message-card">
+            <div class="message-header">
+              <span class="message-sender">${msg.customer_name}</span>
+              <span>${date.toLocaleDateString()} ${date.toLocaleTimeString()}</span>
+            </div>
+            <div class="message-body">${msg.message}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function showToast(message, success = true) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.style.background = success ? '#48bb78' : '#f56565';
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    document.addEventListener('DOMContentLoaded', initializeApp);
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99b8853a92a58b0b',t:'MTc2MjY0MTA4NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html><!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Global Embroidery Studio</title>
+  <script src="/_sdk/data_sdk.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #2d3748;
+      min-height: 100%;
+    }
+
+    html {
+      height: 100%;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    header {
+      text-align: center;
+      padding: 3rem 1rem;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      margin-bottom: 2rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin: 0 0 0.5rem 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .tagline {
+      font-size: 1.25rem;
+      color: #718096;
+      margin-bottom: 2rem;
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+
+    .tab-btn {
+      padding: 0.75rem 2rem;
+      border: none;
+      background: rgba(255, 255, 255, 0.9);
+      color: #667eea;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .tab-btn:hover {
+      background: #667eea;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .tab-btn.active {
+      background: #667eea;
+      color: white;
+    }
+
+    .tab-content {
+      display: none;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .design-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .design-card {
+      background: white;
+      border-radius: 15px;
+      padding: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .design-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+      border-color: #667eea;
+    }
+
+    .design-icon {
+      font-size: 4rem;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .design-name {
+      font-weight: 600;
+      font-size: 1.1rem;
+      text-align: center;
+      color: #2d3748;
+      margin-bottom: 0.5rem;
+    }
+
+    .design-category {
+      text-align: center;
+      color: #718096;
+      font-size: 0.9rem;
+    }
+
+    .customizer {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      .customizer {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .preview-area {
+      background: #f7fafc;
+      border-radius: 15px;
+      padding: 2rem;
+      min-height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      border: 2px dashed #cbd5e0;
+    }
+
+    .preview-content {
+      text-align: center;
+      position: relative;
+    }
+
+    .fabric-preview {
+      width: 100%;
+      max-width: 300px;
+      height: 300px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5rem;
+      position: relative;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .design-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 4rem;
+      opacity: 0.9;
+      filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
+    }
+
+    .controls-area {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    label {
+      font-weight: 600;
+      color: #2d3748;
+      font-size: 0.95rem;
+    }
+
+    input, select, textarea {
+      padding: 0.75rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .color-picker-group {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    input[type="color"] {
+      width: 60px;
+      height: 60px;
+      border-radius: 10px;
+      cursor: pointer;
+      border: 2px solid #e2e8f0;
+    }
+
+    .btn {
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-primary {
+      background: #667eea;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-primary:disabled {
+      background: #cbd5e0;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-secondary {
+      background: #e2e8f0;
+      color: #2d3748;
+    }
+
+    .btn-secondary:hover {
+      background: #cbd5e0;
+    }
+
+    .order-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .order-card {
+      background: white;
+      border-radius: 15px;
+      padding: 1.5rem;
+      border-left: 4px solid #667eea;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .order-id {
+      font-weight: 700;
+      color: #667eea;
+      font-size: 1.1rem;
+    }
+
+    .status-badge {
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .status-pending {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status-processing {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .status-completed {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .order-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      color: #4a5568;
+      font-size: 0.95rem;
+    }
+
+    .message-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 1.5rem;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .message-card {
+      background: white;
+      border-radius: 15px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .message-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+      font-size: 0.9rem;
+      color: #718096;
+    }
+
+    .message-sender {
+      font-weight: 600;
+      color: #667eea;
+    }
+
+    .message-body {
+      color: #2d3748;
+      line-height: 1.6;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: #718096;
+    }
+
+    .empty-state-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: #48bb78;
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      display: none;
+      z-index: 1000;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .toast.show {
+      display: block;
+    }
+
+    .loading {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .ai-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-left: 0.5rem;
+    }
+
+    h2 {
+      font-size: 1.75rem;
+      margin-bottom: 1rem;
+      color: #2d3748;
+    }
+
+    h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+      color: #2d3748;
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <div class="container">
+   <header>
+    <h1 id="platform-title">Global Embroidery Studio</h1>
+    <p class="tagline" id="tagline">Discover &amp; Customize Embroidery Designs</p>
+    <div class="nav-tabs"><button class="tab-btn active" data-tab="discover">🌍 Discover Designs</button> <button class="tab-btn" data-tab="customize">✨ Customize</button> <button class="tab-btn" data-tab="orders">📦 My Orders</button> <button class="tab-btn" data-tab="contact">💬 Contact Team</button>
+    </div>
+   </header>
+   <div id="discover" class="tab-content active">
+    <h2>Browse Global Embroidery Designs</h2>
+    <p style="color: #718096; margin-bottom: 1rem;">Select a design to start customizing</p>
+    <div class="design-grid" id="design-grid"></div>
+   </div>
+   <div id="customize" class="tab-content">
+    <h2>Customize Your Design <span class="ai-badge">AI Preview</span></h2>
+    <div class="customizer">
+     <div class="preview-area">
+      <div class="preview-content">
+       <div class="fabric-preview" id="fabric-preview">
+        <div class="design-overlay" id="design-overlay">
+         🌸
+        </div>
+       </div>
+       <p style="margin-top: 1rem; color: #718096; font-size: 0.9rem;">AI-assisted preview on your fabric</p>
+      </div>
+     </div>
+     <div class="controls-area">
+      <div class="control-group"><label for="design-select">Select Design</label> <select id="design-select"></select>
+      </div>
+      <div class="control-group"><label>Fabric Color</label>
+       <div class="color-picker-group"><input type="color" id="fabric-color" value="#ffffff"> <span id="fabric-color-label">#ffffff</span>
+       </div>
+      </div>
+      <div class="control-group"><label>Thread Color</label>
+       <div class="color-picker-group"><input type="color" id="thread-color" value="#ff6b9d"> <span id="thread-color-label">#ff6b9d</span>
+       </div>
+      </div>
+      <div class="control-group"><label for="size-select">Size</label> <select id="size-select"> <option value="small">Small (5cm x 5cm)</option> <option value="medium" selected>Medium (10cm x 10cm)</option> <option value="large">Large (15cm x 15cm)</option> <option value="xlarge">Extra Large (20cm x 20cm)</option> </select>
+      </div>
+      <div class="control-group"><label for="quantity">Quantity</label> <input type="number" id="quantity" min="1" value="1">
+      </div>
+      <div class="control-group"><label for="customer-name">Your Name</label> <input type="text" id="customer-name" placeholder="Enter your name">
+      </div>
+      <div class="control-group"><label for="customer-email">Email</label> <input type="email" id="customer-email" placeholder="your@email.com">
+      </div><button class="btn btn-primary" id="place-order-btn"> <span id="order-button-text">Place Order</span> </button>
+     </div>
+    </div>
+   </div>
+   <div id="orders" class="tab-content">
+    <h2>Track Your Orders</h2>
+    <p style="color: #718096; margin-bottom: 1rem;">Monitor the status of your embroidery orders</p>
+    <div class="order-list" id="order-list"></div>
+   </div>
+   <div id="contact" class="tab-content">
+    <h2 id="contact-heading">Questions? Let's Talk</h2>
+    <p style="color: #718096; margin-bottom: 1.5rem;">Send a message to our embroidery team</p>
+    <div class="control-group"><label for="message-name">Your Name</label> <input type="text" id="message-name" placeholder="Enter your name">
+    </div>
+    <div class="control-group" style="margin-top: 1rem;"><label for="message-email">Email</label> <input type="email" id="message-email" placeholder="your@email.com">
+    </div>
+    <div class="control-group" style="margin-top: 1rem;"><label for="message-text">Message</label> <textarea id="message-text" rows="5" placeholder="How can we help you?"></textarea>
+    </div><button class="btn btn-primary" id="send-message-btn" style="margin-top: 1rem;">Send Message</button>
+    <h3 style="margin-top: 2rem;">Your Messages</h3>
+    <div class="message-list" id="message-list"></div>
+   </div>
+  </div>
+  <div class="toast" id="toast"></div>
+  <script>
+    const designs = [
+      { id: 'd1', name: 'Cherry Blossom', icon: '🌸', category: 'Floral' },
+      { id: 'd2', name: 'Dragon', icon: '🐉', category: 'Asian' },
+      { id: 'd3', name: 'Butterfly', icon: '🦋', category: 'Nature' },
+      { id: 'd4', name: 'Rose Garden', icon: '🌹', category: 'Floral' },
+      { id: 'd5', name: 'Peacock', icon: '🦚', category: 'Birds' },
+      { id: 'd6', name: 'Mandala', icon: '🕉️', category: 'Geometric' },
+      { id: 'd7', name: 'Lotus', icon: '🪷', category: 'Floral' },
+      { id: 'd8', name: 'Phoenix', icon: '🔥', category: 'Mythical' },
+      { id: 'd9', name: 'Sunflower', icon: '🌻', category: 'Floral' },
+      { id: 'd10', name: 'Hummingbird', icon: '🐦', category: 'Birds' },
+      { id: 'd11', name: 'Celtic Knot', icon: '☘️', category: 'Geometric' },
+      { id: 'd12', name: 'Orchid', icon: '🌺', category: 'Floral' }
+    ];
+
+    const defaultConfig = {
+      platform_title: 'Global Embroidery Studio',
+      tagline: 'Discover & Customize Embroidery Designs',
+      cta_button: 'Start Designing',
+      order_button: 'Place Order',
+      contact_heading: "Questions? Let's Talk",
+      background_color: '#667eea',
+      surface_color: '#ffffff',
+      text_color: '#2d3748',
+      primary_action_color: '#667eea',
+      secondary_action_color: '#e2e8f0',
+      font_family: 'Inter',
+      font_size: 16
+    };
+
+    let currentRecordCount = 0;
+    let allRecords = [];
+
+    const dataHandler = {
+      onDataChanged(data) {
+        allRecords = data;
+        currentRecordCount = data.length;
+        renderOrders(data);
+        renderMessages(data);
+      }
+    };
+
+    async function initializeApp() {
+      if (window.dataSdk) {
+        const initResult = await window.dataSdk.init(dataHandler);
+        if (!initResult.isOk) {
+          console.error('Failed to initialize data SDK');
+        }
+      }
+
+      if (window.elementSdk) {
+        await window.elementSdk.init({
+          defaultConfig,
+          onConfigChange: async (config) => {
+            const customFont = config.font_family || defaultConfig.font_family;
+            const baseSize = config.font_size || defaultConfig.font_size;
+            const baseFontStack = '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+
+            document.body.style.fontFamily = `${customFont}, ${baseFontStack}`;
+            document.body.style.fontSize = `${baseSize}px`;
+            document.body.style.background = `linear-gradient(135deg, ${config.background_color || defaultConfig.background_color} 0%, ${config.primary_action_color || defaultConfig.primary_action_color} 100%)`;
+            document.body.style.color = config.text_color || defaultConfig.text_color;
+
+            const header = document.querySelector('header');
+            header.style.background = `rgba(255, 255, 255, 0.95)`;
+
+            const h1 = document.querySelector('h1');
+            h1.style.fontSize = `${baseSize * 2}px`;
+            h1.style.background = `linear-gradient(135deg, ${config.background_color || defaultConfig.background_color} 0%, ${config.primary_action_color || defaultConfig.primary_action_color} 100%)`;
+            h1.style.webkitBackgroundClip = 'text';
+            h1.style.webkitTextFillColor = 'transparent';
+            h1.style.backgroundClip = 'text';
+
+            document.querySelectorAll('h2').forEach(el => {
+              el.style.fontSize = `${baseSize * 1.75}px`;
+              el.style.color = config.text_color || defaultConfig.text_color;
+            });
+
+            document.querySelectorAll('h3').forEach(el => {
+              el.style.fontSize = `${baseSize * 1.25}px`;
+              el.style.color = config.text_color || defaultConfig.text_color;
+            });
+
+            document.querySelector('.tagline').style.fontSize = `${baseSize * 1.25}px`;
+
+            document.querySelectorAll('.btn-primary').forEach(btn => {
+              btn.style.background = config.primary_action_color || defaultConfig.primary_action_color;
+            });
+
+            document.querySelectorAll('.btn-secondary').forEach(btn => {
+              btn.style.background = config.secondary_action_color || defaultConfig.secondary_action_color;
+            });
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+              btn.style.color = config.primary_action_color || defaultConfig.primary_action_color;
+            });
+
+            document.querySelectorAll('.tab-btn.active').forEach(btn => {
+              btn.style.background = config.primary_action_color || defaultConfig.primary_action_color;
+              btn.style.color = config.surface_color || defaultConfig.surface_color;
+            });
+
+            document.getElementById('platform-title').textContent = config.platform_title || defaultConfig.platform_title;
+            document.getElementById('tagline').textContent = config.tagline || defaultConfig.tagline;
+            document.getElementById('order-button-text').textContent = config.order_button || defaultConfig.order_button;
+            document.getElementById('contact-heading').textContent = config.contact_heading || defaultConfig.contact_heading;
+          },
+          mapToCapabilities: (config) => ({
+            recolorables: [
+              {
+                get: () => config.background_color || defaultConfig.background_color,
+                set: (value) => {
+                  if (window.elementSdk) {
+                    window.elementSdk.config.background_color = value;
+                    window.elementSdk.setConfig({ background_color: value });
+                  }
+                }
+              },
+              {
+                get: () => config.surface_color || defaultConfig.surface_color,
+                set: (value) => {
+                  if (window.elementSdk) {
+                    window.elementSdk.config.surface_color = value;
+                    window.elementSdk.setConfig({ surface_color: value });
+                  }
+                }
+              },
+              {
+                get: () => config.text_color || defaultConfig.text_color,
+                set: (value) => {
+                  if (window.elementSdk) {
+                    window.elementSdk.config.text_color = value;
+                    window.elementSdk.setConfig({ text_color: value });
+                  }
+                }
+              },
+              {
+                get: () => config.primary_action_color || defaultConfig.primary_action_color,
+                set: (value) => {
+                  if (window.elementSdk) {
+                    window.elementSdk.config.primary_action_color = value;
+                    window.elementSdk.setConfig({ primary_action_color: value });
+                  }
+                }
+              },
+              {
+                get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
+                set: (value) => {
+                  if (window.elementSdk) {
+                    window.elementSdk.config.secondary_action_color = value;
+                    window.elementSdk.setConfig({ secondary_action_color: value });
+                  }
+                }
+              }
+            ],
+            borderables: [],
+            fontEditable: {
+              get: () => config.font_family || defaultConfig.font_family,
+              set: (value) => {
+                if (window.elementSdk) {
+                  window.elementSdk.config.font_family = value;
+                  window.elementSdk.setConfig({ font_family: value });
+                }
+              }
+            },
+            fontSizeable: {
+              get: () => config.font_size || defaultConfig.font_size,
+              set: (value) => {
+                if (window.elementSdk) {
+                  window.elementSdk.config.font_size = value;
+                  window.elementSdk.setConfig({ font_size: value });
+                }
+              }
+            }
+          }),
+          mapToEditPanelValues: (config) => new Map([
+            ['platform_title', config.platform_title || defaultConfig.platform_title],
+            ['tagline', config.tagline || defaultConfig.tagline],
+            ['cta_button', config.cta_button || defaultConfig.cta_button],
+            ['order_button', config.order_button || defaultConfig.order_button],
+            ['contact_heading', config.contact_heading || defaultConfig.contact_heading]
+          ])
+        });
+      }
+
+      renderDesigns();
+      populateDesignSelect();
+      setupEventListeners();
+    }
+
+    function renderDesigns() {
+      const grid = document.getElementById('design-grid');
+      grid.innerHTML = designs.map(design => `
+        <div class="design-card" data-design-id="${design.id}">
+          <div class="design-icon">${design.icon}</div>
+          <div class="design-name">${design.name}</div>
+          <div class="design-category">${design.category}</div>
+        </div>
+      `).join('');
+
+      document.querySelectorAll('.design-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const designId = card.dataset.designId;
+          const design = designs.find(d => d.id === designId);
+          document.getElementById('design-select').value = designId;
+          document.getElementById('design-overlay').textContent = design.icon;
+          switchTab('customize');
+        });
+      });
+    }
+
+    function populateDesignSelect() {
+      const select = document.getElementById('design-select');
+      select.innerHTML = designs.map(design => 
+        `<option value="${design.id}">${design.icon} ${design.name}</option>`
+      ).join('');
+    }
+
+    function setupEventListeners() {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          switchTab(btn.dataset.tab);
+        });
+      });
+
+      document.getElementById('design-select').addEventListener('change', (e) => {
+        const design = designs.find(d => d.id === e.target.value);
+        document.getElementById('design-overlay').textContent = design.icon;
+      });
+
+      document.getElementById('fabric-color').addEventListener('input', (e) => {
+        document.getElementById('fabric-preview').style.background = e.target.value;
+        document.getElementById('fabric-color-label').textContent = e.target.value;
+      });
+
+      document.getElementById('thread-color').addEventListener('input', (e) => {
+        document.getElementById('design-overlay').style.color = e.target.value;
+        document.getElementById('thread-color-label').textContent = e.target.value;
+      });
+
+      document.getElementById('place-order-btn').addEventListener('click', placeOrder);
+      document.getElementById('send-message-btn').addEventListener('click', sendMessage);
+    }
+
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.tab === tabName) {
+          btn.classList.add('active');
+        }
+      });
+
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      document.getElementById(tabName).classList.add('active');
+    }
+
+    async function placeOrder() {
+      if (currentRecordCount >= 999) {
+        showToast('Maximum limit of 999 records reached. Please contact support.', false);
+        return;
+      }
+
+      const designId = document.getElementById('design-select').value;
+      const design = designs.find(d => d.id === designId);
+      const fabricColor = document.getElementById('fabric-color').value;
+      const threadColor = document.getElementById('thread-color').value;
+      const size = document.getElementById('size-select').value;
+      const quantity = parseInt(document.getElementById('quantity').value);
+      const customerName = document.getElementById('customer-name').value.trim();
+      const customerEmail = document.getElementById('customer-email').value.trim();
+
+      if (!customerName || !customerEmail) {
+        showToast('Please enter your name and email', false);
+        return;
+      }
+
+      const btn = document.getElementById('place-order-btn');
+      btn.disabled = true;
+      btn.textContent = 'Placing Order...';
+
+      const orderId = 'ORD-' + Date.now();
+      const orderData = {
+        id: 'order-' + Date.now(),
+        type: 'order',
+        order_id: orderId,
+        design_id: designId,
+        design_name: design.name,
+        fabric_color: fabricColor,
+        thread_color: threadColor,
+        size: size,
+        quantity: quantity,
+        status: 'pending',
+        customer_name: customerName,
+        customer_email: customerEmail,
+        timestamp: new Date().toISOString()
+      };
+
+      if (window.dataSdk) {
+        const result = await window.dataSdk.create(orderData);
+        if (result.isOk) {
+          showToast('Order placed successfully! 🎉');
+          switchTab('orders');
+        } else {
+          showToast('Failed to place order. Please try again.', false);
+        }
+      }
+
+      btn.disabled = false;
+      btn.textContent = window.elementSdk?.config?.order_button || defaultConfig.order_button;
+    }
+
+    async function sendMessage() {
+      if (currentRecordCount >= 999) {
+        showToast('Maximum limit of 999 records reached. Please contact support.', false);
+        return;
+      }
+
+      const name = document.getElementById('message-name').value.trim();
+      const email = document.getElementById('message-email').value.trim();
+      const message = document.getElementById('message-text').value.trim();
+
+      if (!name || !email || !message) {
+        showToast('Please fill in all fields', false);
+        return;
+      }
+
+      const btn = document.getElementById('send-message-btn');
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+
+      const messageData = {
+        id: 'msg-' + Date.now(),
+        type: 'message',
+        customer_name: name,
+        customer_email: email,
+        message: message,
+        timestamp: new Date().toISOString()
+      };
+
+      if (window.dataSdk) {
+        const result = await window.dataSdk.create(messageData);
+        if (result.isOk) {
+          showToast('Message sent successfully! 💬');
+          document.getElementById('message-name').value = '';
+          document.getElementById('message-email').value = '';
+          document.getElementById('message-text').value = '';
+        } else {
+          showToast('Failed to send message. Please try again.', false);
+        }
+      }
+
+      btn.disabled = false;
+      btn.textContent = 'Send Message';
+    }
+
+    function renderOrders(data) {
+      const orders = data.filter(record => record.type === 'order');
+      const orderList = document.getElementById('order-list');
+
+      if (orders.length === 0) {
+        orderList.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">📦</div>
+            <p>No orders yet. Start by customizing a design!</p>
+          </div>
+        `;
+        return;
+      }
+
+      orderList.innerHTML = orders.map(order => {
+        const date = new Date(order.timestamp);
+        return `
+          <div class="order-card">
+            <div class="order-header">
+              <span class="order-id">${order.order_id}</span>
+              <span class="status-badge status-${order.status}">${order.status.toUpperCase()}</span>
+            </div>
+            <div class="order-details">
+              <div><strong>Design:</strong> ${order.design_name}</div>
+              <div><strong>Size:</strong> ${order.size}</div>
+              <div><strong>Quantity:</strong> ${order.quantity}</div>
+              <div><strong>Date:</strong> ${date.toLocaleDateString()}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderMessages(data) {
+      const messages = data.filter(record => record.type === 'message');
+      const messageList = document.getElementById('message-list');
+
+      if (messages.length === 0) {
+        messageList.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">💬</div>
+            <p>No messages yet. Send us a message above!</p>
+          </div>
+        `;
+        return;
+      }
+
+      messageList.innerHTML = messages.map(msg => {
+        const date = new Date(msg.timestamp);
+        return `
+          <div class="message-card">
+            <div class="message-header">
+              <span class="message-sender">${msg.customer_name}</span>
+              <span>${date.toLocaleDateString()} ${date.toLocaleTimeString()}</span>
+            </div>
+            <div class="message-body">${msg.message}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function showToast(message, success = true) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.style.background = success ? '#48bb78' : '#f56565';
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    document.addEventListener('DOMContentLoaded', initializeApp);
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99b8853a92a58b0b',t:'MTc2MjY0MTA4NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
